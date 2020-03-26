@@ -1,2 +1,3 @@
-# ekf-ahrs
-Extended Kalman filter based attitude and heading reference system
+# Ekf-AHRS
+
+Extended Kalman filter based attitude and heading reference system.

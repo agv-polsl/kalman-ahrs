@@ -1,3 +1,13 @@
+# System Files
+.DS_Store
+
+# Extra Project Files
+compile_commands.json
+.clangd
+
+# Build Directory
+build
+
 # Prerequisites
 *.d
 
