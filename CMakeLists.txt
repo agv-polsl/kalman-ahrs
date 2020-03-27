@@ -7,7 +7,10 @@ add_library(ekf_ahrs src/ekf_ahrs.cpp)
 add_library(ekf_ahrs::ekf_ahrs ALIAS ekf_ahrs)
 
 target_include_directories(ekf_ahrs
-    PUBLIC ${PROJECT_SOURCE_DIR}/include
+    PUBLIC
+        ${PROJECT_SOURCE_DIR}/include
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/src
 )
 
 target_compile_options(ekf_ahrs PRIVATE
