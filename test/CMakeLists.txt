@@ -4,9 +4,10 @@ cmake_minimum_required(VERSION 3.1)
 add_subdirectory(vendor)
 
 add_executable(test_bin
-    main.cpp
+    src/main.cpp
     # Test sources
-    test.cpp
+    src/ekf_ahrs_test.cpp
+    src/numeric_test.cpp
 )
 
 target_include_directories(test_bin
