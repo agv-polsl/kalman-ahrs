@@ -15,21 +15,27 @@ target_include_directories(ekf_ahrs
 
 target_compile_options(ekf_ahrs PRIVATE
     -Wall
-    -Wextra # reasonable and standard
-    -Wshadow # warn the user if a variable declaration shadows one from a
-             # parent context
-    -Wnon-virtual-dtor # warn the user if a class with virtual functions has a
-                       # non-virtual destructor.
-    -Wold-style-cast # warn for c-style casts
-    -Wcast-align # warn for potential performance problem casts
-    -Wunused # warn on anything being unused
-    -Woverloaded-virtual # warn if you overload (not override) a virtual
-                         # function
-    -Wpedantic # warn if non-standard C++ is used
-    -Wconversion # warn on type conversions that may lose data
-    -Wsign-conversion # warn on sign conversions
-    -Wdouble-promotion # warn if float is implicit promoted to double
+    -Wextra
+    -Wshadow # Warn if variable overshadows parent context
+    -Wnon-virtual-dtor # Warn if class with virtual func has novirt dtor
+    -Wold-style-cast # Warn for c-style casts
+    -Wcast-align # Warn for potential performance problem casts
+    -Wunused # Warn on anything being unused
+    -Woverloaded-virtual # Warn if overload a virtual function
+    -Wpedantic # Warn if non-standard C++ is used
+    -Wconversion # Warn on type conversions that may lose data
+    -Wsign-conversion # Warn on sign conversions
+    -Wdouble-promotion # Warn if float is implicit promoted to double
 )
+
+# Copy compile commands to project root after build
+if(CMAKE_EXPORT_COMPILE_COMMANDS STREQUAL ON)
+    add_custom_command(TARGET ekf_ahrs
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${PROJECT_BINARY_DIR}/compile_commands.json ${PROJECT_SOURCE_DIR}
+    )
+endif()
 
 enable_testing()
 add_subdirectory(test)

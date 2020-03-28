@@ -14,8 +14,6 @@ target_include_directories(test_bin
     PRIVATE
         # Mocks directory
         ${CMAKE_CURRENT_SOURCE_DIR}/mocks
-        # Includes of tested classes
-        ${INCLUDE_PATH}
 )
 
 target_link_libraries(test_bin
@@ -24,6 +22,7 @@ target_link_libraries(test_bin
     ekf_ahrs::ekf_ahrs
 )
 
+# Google Test requires C++ 11 to compile
 set_target_properties(
     gtest gtest_main gmock gmock_main test_bin
     PROPERTIES
