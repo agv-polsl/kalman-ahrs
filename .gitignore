@@ -5,6 +5,9 @@
 compile_commands.json
 .clangd
 
+# Temporary Files
+*.swp
+
 # Build Directory
 build
 
