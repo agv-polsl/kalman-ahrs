@@ -36,7 +36,7 @@ array_2d<T, N, M> gauss_swap(const array_2d<T, N, M> &arr) {
 }
 
 template <typename T, size_t N, size_t M>
-array_2d<T, N, M> gaus_reduce(const array_2d<T, N, M> &arr) {
+array_2d<T, N, M> gauss_reduce(const array_2d<T, N, M> &arr) {
     array_2d<T, N, M> ret = arr;
     return ret;
 }
