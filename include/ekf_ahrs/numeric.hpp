@@ -34,14 +34,14 @@ std::ostream& operator<<(std::ostream& os, const array_2d<T, N, M> arr) {
 }
 
 template <typename T, size_t N, size_t M>
-array_2d<T, N, M> transpose(const array_2d<T, N, M>& arr) {
-    array_2d<T, N, M> ret = arr;
+array_2d<T, N, M>& transpose(array_2d<T, N, M>& arr) {
+    array_2d<T, N, M> tmp = arr;
     for (size_t i = 0; i < N; i++) {
         for (size_t j = 0; j < M; j++) {
-            ret[i][j] = arr[j][i];
+            arr[i][j] = tmp[j][i];
         }
     }
-    return ret;
+    return arr;
 }
 
 /* Below are function to perform matrix inversion using Gauss-Jordan
@@ -66,44 +66,42 @@ array_2d<T, N, 2 * N> add_identity(const array_2d<T, N, N>& arr) {
 }
 
 template <typename T, size_t N, size_t M>
-array_2d<T, N, M> gauss_swap(const array_2d<T, N, M>& arr) {
+array_2d<T, N, M>& gauss_swap(array_2d<T, N, M>& arr) {
     static_assert(M == 2 * N,
                   "Extended matrix must have twice more columns than rows");
-    array_2d<T, N, M> ret = arr;
     for (size_t i = N - 1; i > 0; i--) {
-        if (ret[i - 1][0] < ret[i][0]) {
-            auto tmp = ret[i];
-            ret[i] = ret[i - 1];
-            ret[i - 1] = tmp;
+        if (arr[i - 1][0] < arr[i][0]) {
+            auto tmp = arr[i];
+            arr[i] = arr[i - 1];
+            arr[i - 1] = tmp;
         }
     }
-    return ret;
+    return arr;
 }
 
 template <typename T, size_t N, size_t M>
-array_2d<T, N, M> gauss_reduce(const array_2d<T, N, M>& arr) {
+array_2d<T, N, M>& gauss_reduce(array_2d<T, N, M>& arr) {
     static_assert(M == 2 * N,
                   "Extended matrix must have twice more columns than rows");
-    array_2d<T, N, M> ret = arr;
 
     for (size_t i = 0; i < N; i++) {
         for (size_t j = 0; j < N; j++) {
             if (j != i) {
-                auto tmp = ret[j][i] / ret[i][i];
+                auto tmp = arr[j][i] / arr[i][i];
                 for (size_t k = 0; k < 2 * N; k++) {
-                    ret[j][k] -= ret[i][k] * tmp;
+                    arr[j][k] -= arr[i][k] * tmp;
                 }
             }
         }
     }
 
     for (size_t i = 0; i < N; i++) {
-        auto temp = ret[i][i];
+        auto temp = arr[i][i];
         for (size_t j = 0; j < 2 * N; j++) {
-            ret[i][j] = ret[i][j] / temp;
+            arr[i][j] = arr[i][j] / temp;
         }
     }
-    return ret;
+    return arr;
 }
 
 template <typename T, size_t N, size_t M>
@@ -119,13 +117,10 @@ array_2d<T, N, N> extract_inv(const array_2d<T, N, M>& arr) {
 }
 
 template <typename T, size_t N>
-array_2d<T, N, N> inv(const array_2d<T, N, N>& arr) {
-    array_2d<T, N, N> ret;
+array_2d<T, N, N>& inv(array_2d<T, N, N>& arr) {
     auto extended = add_identity(arr);
-    extended = gauss_swap(extended);
-    extended = gauss_reduce(extended);
-    ret = extract_inv(extended);
-    return ret;
+    arr = extract_inv(gauss_reduce(gauss_swap(extended)));
+    return arr;
 }
 
 }  // namespace ekfn
