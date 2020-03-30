@@ -16,6 +16,15 @@ MATCHER_P(Arrays2dDoubleEq, expected, "") {
     return true;
 }
 
+MATCHER_P2(Arrays2dDoubleNear, expected, max_abs_err, "") {
+    for (int i = 0; i < arg.size(); i++) {
+        for (int j = 0; j < arg[i].size(); j++) {
+            EXPECT_THAT(arg[i][j], DoubleNear(expected[i][j], max_abs_err));
+        }
+    }
+    return true;
+}
+
 TEST(EkfNumericTest, Muls3By3And3By3Correctly) {
     ekfn::array_2d<double, 3, 3> lhs = {
         {{9.11, 18.09, 10.28}, {6.57, 0.10, 11.99}, {15.77, 19.14, 22.43}}};
@@ -113,7 +122,7 @@ TEST(EkfNumericTest, PerformsGaussReductionToIdentityOn3By3) {
          {0, 1.0, 0, 0.305, -0.314, -0.038},
          {0, 0, 1.0, -0.010, 0.229, -0.124}}};
 
-    EXPECT_THAT(ekfn::gauss_reduce(arr), Arrays2dDoubleEq(expected));
+    EXPECT_THAT(ekfn::gauss_reduce(arr), Arrays2dDoubleNear(expected, 0.01));
 }
 
 TEST(EkfNumericTest, ExtractsInvertedFrom3By3Extended) {
@@ -136,5 +145,5 @@ TEST(EkfNumericTest, Inverts3by3) {
                                               {0.305, -0.314, -0.038},
                                               {-0.010, 0.229, -0.124}}};
 
-    EXPECT_THAT(ekfn::inv(arr), Arrays2dDoubleEq(expected));
+    EXPECT_THAT(ekfn::inv(arr), Arrays2dDoubleNear(expected, 0.01));
 }
