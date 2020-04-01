@@ -7,6 +7,33 @@ namespace ekfn { /* Extended kalman filter numerics */
 template <typename T, size_t N, size_t M>
 using array_2d = std::array<std::array<T, M>, N>;
 
+template <typename T, class BinaryOperation, size_t N, size_t M>
+array_2d<T, N, M> element_wise(const array_2d<T, N, M>& lhs,
+                               const array_2d<T, N, M>& rhs,
+                               BinaryOperation operation) {
+    array_2d<T, N, M> ret = {0};
+    for (size_t i = 0; i < N; i++) {
+        for (size_t j = 0; i < N; i++) {
+            std::invoke(operation, lhs[i][j], rhs[i][j]);
+        }
+    }
+    return ret;
+}
+
+template <typename T, size_t N, size_t M>
+array_2d<T, N, M> operator+(const array_2d<T, N, M>& lhs,
+                            const array_2d<T, N, M>& rhs) {
+    array_2d<T, N, M> ret = {0};
+    return ret;
+}
+
+template <typename T, size_t N, size_t M>
+array_2d<T, N, M> operator-(const array_2d<T, N, M>& lhs,
+                            const array_2d<T, N, M>& rhs) {
+    array_2d<T, N, M> ret = {0};
+    return ret;
+}
+
 template <typename T, size_t Nl, size_t Ml, size_t Nr, size_t Mr>
 array_2d<T, Nl, Mr> operator*(const array_2d<T, Nl, Ml>& lhs,
                               const array_2d<T, Nr, Mr>& rhs) {
