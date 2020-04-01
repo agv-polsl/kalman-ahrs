@@ -12,7 +12,7 @@ target_include_directories(ekf_ahrs
     PRIVATE
         ${PROJECT_SOURCE_DIR}/src
 )
-
+target_compile_features(ekf_ahrs PUBLIC cxx_std_17)
 target_compile_options(ekf_ahrs PRIVATE
     -Wall
     -Wextra

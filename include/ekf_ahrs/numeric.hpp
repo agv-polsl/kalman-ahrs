@@ -1,11 +1,39 @@
 #include <algorithm>
 #include <array>
+#include <functional>
 #include <ostream>
+
+#include <iostream>
 
 namespace ekfn { /* Extended kalman filter numerics */
 
 template <typename T, size_t N, size_t M>
 using array_2d = std::array<std::array<T, M>, N>;
+
+template <typename BinaryOperation, typename T, size_t N, size_t M>
+array_2d<T, N, M> element_wise(const array_2d<T, N, M>& lhs,
+                               const array_2d<T, N, M>& rhs,
+                               BinaryOperation operation) {
+    array_2d<T, N, M> ret = {0};
+    for (size_t i = 0; i < N; i++) {
+        for (size_t j = 0; j < N; j++) {
+            ret[i][j] = std::invoke(operation, lhs[i][j], rhs[i][j]);
+        }
+    }
+    return ret;
+}
+
+template <typename T, size_t N, size_t M>
+array_2d<T, N, M> operator+(const array_2d<T, N, M>& lhs,
+                            const array_2d<T, N, M>& rhs) {
+    return ekfn::element_wise(lhs, rhs, std::plus<T>());
+}
+
+template <typename T, size_t N, size_t M>
+array_2d<T, N, M> operator-(const array_2d<T, N, M>& lhs,
+                            const array_2d<T, N, M>& rhs) {
+    return ekfn::element_wise(lhs, rhs, std::minus<T>());
+}
 
 template <typename T, size_t Nl, size_t Ml, size_t Nr, size_t Mr>
 array_2d<T, Nl, Mr> operator*(const array_2d<T, Nl, Ml>& lhs,
@@ -118,7 +146,7 @@ array_2d<T, N, N> extract_inv(const array_2d<T, N, M>& arr) {
 }
 
 template <typename T, size_t N>
-array_2d<T, N, N>& inv(array_2d<T, N, N>& arr) {
+array_2d<T, N, N> inv(array_2d<T, N, N> arr) {
     auto extended = add_identity(arr);
     arr = extract_inv(gauss_reduce(gauss_swap(extended)));
     return arr;

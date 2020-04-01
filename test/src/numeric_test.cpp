@@ -25,6 +25,30 @@ MATCHER_P2(Arrays2dDoubleNear, expected, max_abs_err, "") {
     return true;
 }
 
+TEST(EkfNumericTest, Adds3By3And3By3Correctly) {
+    ekfn::array_2d<double, 3, 3> lhs = {
+        {{9.11, 18.09, 10.28}, {6.57, 0.10, 11.99}, {15.77, 19.14, 12.43}}};
+    ekfn::array_2d<double, 3, 3> rhs = {
+        {{6.94, 6.89, 24.97}, {21.23, 5.20, 5.12}, {2.49, 24.10, 10.85}}};
+
+    ekfn::array_2d<double, 3, 3> expected = {
+        {{16.05, 24.98, 35.25}, {27.80, 5.30, 17.11}, {18.26, 43.24, 23.28}}};
+
+    EXPECT_THAT(lhs + rhs, Arrays2dDoubleEq(expected));
+}
+
+TEST(EkfNumericTest, Subs3By3And3By3Correctly) {
+    ekfn::array_2d<double, 3, 3> lhs = {
+        {{9.11, 18.09, 10.28}, {6.57, 0.10, 11.99}, {15.77, 19.14, 12.43}}};
+    ekfn::array_2d<double, 3, 3> rhs = {
+        {{6.94, 6.89, 24.97}, {21.23, 5.20, 5.12}, {2.49, 24.10, 10.85}}};
+
+    ekfn::array_2d<double, 3, 3> expected = {
+        {{2.17, 11.20, -14.69}, {-14.66, -5.10, 6.87}, {13.28, -4.96, 1.58}}};
+
+    EXPECT_THAT(lhs - rhs, Arrays2dDoubleEq(expected));
+}
+
 TEST(EkfNumericTest, Muls3By3And3By3Correctly) {
     ekfn::array_2d<double, 3, 3> lhs = {
         {{9.11, 18.09, 10.28}, {6.57, 0.10, 11.99}, {15.77, 19.14, 22.43}}};
