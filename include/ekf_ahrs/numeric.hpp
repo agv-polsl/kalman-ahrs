@@ -63,7 +63,7 @@ std::ostream& operator<<(std::ostream& os, const array_2d<T, N, M> arr) {
 }
 
 template <typename T, size_t N, size_t M>
-array_2d<T, M, N> transpose(array_2d<T, N, M>& arr) {
+array_2d<T, M, N> transpose(const array_2d<T, N, M>& arr) {
     array_2d<T, M, N> res = {0};
     for (size_t i = 0; i < N; i++) {
         for (size_t j = 0; j < M; j++) {
@@ -146,10 +146,9 @@ array_2d<T, N, N> extract_inv(const array_2d<T, N, M>& arr) {
 }
 
 template <typename T, size_t N>
-array_2d<T, N, N> inv(array_2d<T, N, N> arr) {
+array_2d<T, N, N> inv(const array_2d<T, N, N>& arr) {
     auto extended = add_identity(arr);
-    arr = extract_inv(gauss_reduce(gauss_swap(extended)));
-    return arr;
+    return extract_inv(gauss_reduce(gauss_swap(extended)));;
 }
 
 }  // namespace ekfn
