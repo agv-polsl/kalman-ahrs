@@ -21,3 +21,9 @@ TEST(KalmanFilterTest, CalculatesRollFromAccel) {
 
     EXPECT_NEAR(ekfn::calc_pitch(acc_y, acc_z), expected, 0.0001);
 }
+
+TEST(KalmanFilterTest, CalcualtesYawFromMagAndRollPitch) {
+    /* This is not implemented due to inconvenience in the
+     * reference academic paper.
+     */
+}
