@@ -63,14 +63,14 @@ std::ostream& operator<<(std::ostream& os, const array_2d<T, N, M> arr) {
 }
 
 template <typename T, size_t N, size_t M>
-array_2d<T, N, M>& transpose(array_2d<T, N, M>& arr) {
-    array_2d<T, N, M> tmp = arr;
+array_2d<T, M, N> transpose(array_2d<T, N, M>& arr) {
+    array_2d<T, M, N> res = {0};
     for (size_t i = 0; i < N; i++) {
         for (size_t j = 0; j < M; j++) {
-            arr[i][j] = tmp[j][i];
+            res[i][j] = arr[j][i];
         }
     }
-    return arr;
+    return res;
 }
 
 /* Below are function to perform matrix inversion using Gauss-Jordan
