@@ -7,6 +7,7 @@ add_executable(test_bin
     src/main.cpp
     # Test sources
     src/ekf_ahrs_test.cpp
+    src/ahrs_test.cpp
     src/numeric_test.cpp
 )
 
