@@ -25,6 +25,12 @@ MATCHER_P2(Arrays2dDoubleNear, expected, max_abs_err, "") {
     return true;
 }
 
+TEST(EkfNumericTest, Creates3By3EyeMatrix) {
+    ekfn::array_2d<int, 3, 3> expected = {{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}};
+    ekfn::array_2d<int, 3, 3> result = ekfn::eye<int, 3>();
+    EXPECT_EQ(result, expected);
+}
+
 TEST(EkfNumericTest, Adds3By3And3By3Correctly) {
     ekfn::array_2d<double, 3, 3> lhs = {
         {{9.11, 18.09, 10.28}, {6.57, 0.10, 11.99}, {15.77, 19.14, 12.43}}};
