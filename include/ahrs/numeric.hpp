@@ -7,7 +7,7 @@
 #include <iostream>
 #include <ostream>
 
-namespace ekfn { /* Extended kalman filter numerics */
+namespace ahrs {
 
 template <typename T, size_t N, size_t M>
 using array_2d = std::array<std::array<T, M>, N>;
@@ -37,13 +37,13 @@ array_2d<T, N, M> element_wise(const array_2d<T, N, M>& lhs,
 template <typename T, size_t N, size_t M>
 array_2d<T, N, M> operator+(const array_2d<T, N, M>& lhs,
                             const array_2d<T, N, M>& rhs) {
-    return ekfn::element_wise(lhs, rhs, std::plus<T>());
+    return ahrs::element_wise(lhs, rhs, std::plus<T>());
 }
 
 template <typename T, size_t N, size_t M>
 array_2d<T, N, M> operator-(const array_2d<T, N, M>& lhs,
                             const array_2d<T, N, M>& rhs) {
-    return ekfn::element_wise(lhs, rhs, std::minus<T>());
+    return ahrs::element_wise(lhs, rhs, std::minus<T>());
 }
 
 template <typename T, size_t Nl, size_t Ml, size_t Nr, size_t Mr>

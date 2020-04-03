@@ -3,11 +3,11 @@
 #include <gtest/gtest.h>
 
 using namespace ::testing;
-using namespace ekfn;
+using namespace ahrs;
 
 class AhrsTest : public Test {
    public:
-    ekfn::Ahrs ahrs;
+    ahrs::Ahrs ahrs;
 };
 
 TEST_F(AhrsTest, CalculatesPitchFromAccel) {

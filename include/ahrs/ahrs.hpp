@@ -4,7 +4,7 @@
 
 #include "ahrs/numeric.hpp"
 
-namespace ekfn {
+namespace ahrs {
 
 class Ahrs {
    public:
@@ -32,4 +32,4 @@ class Ahrs {
     }
 };
 
-}  // namespace ekfn
+}  // namespace ahrs
