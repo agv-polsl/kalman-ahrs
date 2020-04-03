@@ -26,24 +26,25 @@ double calc_yaw(const double pitch, const double roll, const double mag_x,
 }
 
 class Kalman {
-   private:
+   public:
     double dt;
 
-    ekfn::array_2d<double, 2, 1> x;
-    ekfn::array_2d<double, 2, 2> P;
+    ekfn::array_2d<double, 4, 1> x = { 0 };
 
-    ekfn::array_2d<double, 2, 2> A;
-    ekfn::array_2d<double, 1, 2> H;
+    ekfn::array_2d<double, 4, 4> A;
+    ekfn::array_2d<double, 4, 2> B;
+    ekfn::array_2d<double, 2, 4> H;
 
-    ekfn::array_2d<double, 2, 2> Q;
-    ekfn::array_2d<double, 1, 1> R;
+    ekfn::array_2d<double, 4, 4> P = { 0   };
+    ekfn::array_2d<double, 4, 4> Q;
+    ekfn::array_2d<double, 2, 2> R;
 
-    void predict() {
-        x = A * x;
+    void predict(ekfn::array_2d<double, 2, 1> u) {
+        x = A * x + B * u;
         P = A * P * ekfn::transpose(A) + Q;
     }
 
-    void correct(ekfn::array_2d<double, 1, 1> z) {
+    void correct(ekfn::array_2d<double, 2, 1> z) {
         auto K =
             P * ekfn::transpose(H) * ekfn::inv(H * P * ekfn::transpose(H) + R);
         x = x + K * (z - H * x);
@@ -51,12 +52,12 @@ class Kalman {
     }
 
    public:
-    Kalman(ekfn::array_2d<double, 2, 2> A, ekfn::array_2d<double, 2, 2> Q,
-           ekfn::array_2d<double, 1, 1> R)
+    Kalman(ekfn::array_2d<double, 4, 4> A, ekfn::array_2d<double, 4, 4> Q,
+           ekfn::array_2d<double, 2, 2> R)
         : A{A}, Q{Q}, R{R} {}
 
-    auto update(ekfn::array_2d<double, 1, 1> measurement) {
-        predict();
+    auto update(ekfn::array_2d<double, 2, 1> input, ekfn::array_2d<double, 2, 1> measurement) {
+        predict(input);
         correct(measurement);
         return x;
     }
