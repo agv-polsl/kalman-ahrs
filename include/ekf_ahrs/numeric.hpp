@@ -11,7 +11,7 @@ template <typename T, size_t N, size_t M>
 using array_2d = std::array<std::array<T, M>, N>;
 
 template <typename T, size_t N>
-array_2d<T, N, N> eye() {
+constexpr array_2d<T, N, N> eye() {
     array_2d<T, N, N> ret = {0};
     for (size_t i = 0; i < N; i++) {
         ret[i][i] = 1;
