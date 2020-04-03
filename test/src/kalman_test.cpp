@@ -1,4 +1,4 @@
-#include "ekf_ahrs/kalman.hpp"
+#include "ahrs/kalman.hpp"
 
 #include <gtest/gtest.h>
 

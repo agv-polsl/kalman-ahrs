@@ -1,4 +1,4 @@
-#include "ekf_ahrs/numeric.hpp"
+#include "ahrs/numeric.hpp"
 
 #include <gmock/gmock-matchers.h>
 #include <gmock/gmock.h>

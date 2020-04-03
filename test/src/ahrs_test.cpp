@@ -1,4 +1,4 @@
-#include "ekf_ahrs/ahrs.hpp"
+#include "ahrs/ahrs.hpp"
 
 #include <gtest/gtest.h>
 

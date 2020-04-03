@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-#include "ekf_ahrs/numeric.hpp"
+#include "ahrs/numeric.hpp"
 
 namespace ekfn {
 

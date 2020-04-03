@@ -6,7 +6,7 @@ add_subdirectory(vendor)
 add_executable(test_bin
     src/main.cpp
     # Test sources
-    src/ekf_ahrs_test.cpp
+    src/kalman_test.cpp
     src/ahrs_test.cpp
     src/numeric_test.cpp
 )
@@ -20,7 +20,7 @@ target_include_directories(test_bin
 target_link_libraries(test_bin
     gtest_main
     gmock_main
-    ekf_ahrs::ekf_ahrs
+    ahrs::ahrs
 )
 
 # Google Test requires C++ 11 to compile
