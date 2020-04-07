@@ -14,7 +14,7 @@ using array_2d = std::array<std::array<T, M>, N>;
 
 template <typename T, size_t N>
 constexpr array_2d<T, N, N> eye() {
-    array_2d<T, N, N> ret = {0};
+    array_2d<T, N, N> ret;
     for (size_t i = 0; i < N; i++) {
         ret[i][i] = 1;
     }
@@ -23,7 +23,7 @@ constexpr array_2d<T, N, N> eye() {
 
 template <typename T, size_t N, size_t M>
 constexpr array_2d<T, N, M> zeros() {
-    array_2d<T, N, M> ret = {0};
+    array_2d<T, N, M> ret;
     for (auto& row : ret) {
         std::fill(row.begin(), row.end(), 0);
     }
@@ -34,7 +34,7 @@ template <typename BinaryOperation, typename T, size_t N, size_t M>
 array_2d<T, N, M> element_wise(const array_2d<T, N, M>& lhs,
                                const array_2d<T, N, M>& rhs,
                                BinaryOperation operation) {
-    array_2d<T, N, M> ret = {0};
+    array_2d<T, N, M> ret;
     for (size_t i = 0; i < N; i++) {
         for (size_t j = 0; j < M; j++) {
             ret[i][j] = std::invoke(operation, lhs[i][j], rhs[i][j]);
@@ -59,7 +59,7 @@ template <typename T, size_t Nl, size_t Ml, size_t Nr, size_t Mr>
 array_2d<T, Nl, Mr> operator*(const array_2d<T, Nl, Ml>& lhs,
                               const array_2d<T, Nr, Mr>& rhs) {
     static_assert(Ml == Nr, "Can not multiply matrices of given size");
-    array_2d<T, Nl, Mr> ret = {0};
+    array_2d<T, Nl, Mr> ret;
 
     for (size_t i = 0; i < Nl; i++) {
         for (size_t j = 0; j < Mr; j++) {
@@ -84,13 +84,13 @@ std::ostream& operator<<(std::ostream& os, const array_2d<T, N, M> arr) {
 
 template <typename T, size_t N, size_t M>
 array_2d<T, M, N> transpose(const array_2d<T, N, M>& arr) {
-    array_2d<T, M, N> res = {0};
+    array_2d<T, M, N> ret;
     for (size_t i = 0; i < M; i++) {
         for (size_t j = 0; j < N; j++) {
-            res[i][j] = arr[j][i];
+            ret[i][j] = arr[j][i];
         }
     }
-    return res;
+    return ret;
 }
 
 /* Below are function to perform matrix inversion using Gauss-Jordan
@@ -99,7 +99,7 @@ array_2d<T, M, N> transpose(const array_2d<T, N, M>& arr) {
 
 template <typename T, size_t N>
 array_2d<T, N, 2 * N> add_identity(const array_2d<T, N, N>& arr) {
-    array_2d<T, N, 2 * N> ret = {0};
+    array_2d<T, N, 2 * N> ret;
     for (size_t i = 0; i < N; i++) {
         for (size_t j = 0; j < 2 * N; j++) {
             if (j < N) {
@@ -159,7 +159,7 @@ array_2d<T, N, N> extract_inv(const array_2d<T, N, M>& arr) {
                   "Extended matrix must have twice more columns than rows");
     array_2d<T, N, N> ret;
     /* Copy right half of the extended matrix */
-    for (int i = 1; i < N + 1; i++) {
+    for (size_t i = 1; i < N + 1; i++) {
         std::copy_n(arr[i].rend(), N, ret[i].rend());
     }
     return ret;
