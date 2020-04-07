@@ -59,7 +59,7 @@ template <typename T, size_t Nl, size_t Ml, size_t Nr, size_t Mr>
 array_2d<T, Nl, Mr> operator*(const array_2d<T, Nl, Ml>& lhs,
                               const array_2d<T, Nr, Mr>& rhs) {
     static_assert(Ml == Nr, "Can not multiply matrices of given size");
-    array_2d<T, Nl, Mr> ret;
+    auto ret = zeros<T, Nl, Mr>();
 
     for (size_t i = 0; i < Nl; i++) {
         for (size_t j = 0; j < Mr; j++) {
@@ -99,7 +99,7 @@ array_2d<T, M, N> transpose(const array_2d<T, N, M>& arr) {
 
 template <typename T, size_t N>
 array_2d<T, N, 2 * N> add_identity(const array_2d<T, N, N>& arr) {
-    array_2d<T, N, 2 * N> ret;
+    auto ret = zeros<T, N, 2 * N>();
     for (size_t i = 0; i < N; i++) {
         for (size_t j = 0; j < 2 * N; j++) {
             if (j < N) {
@@ -171,4 +171,4 @@ array_2d<T, N, N> inv(const array_2d<T, N, N>& arr) {
     return extract_inv(gauss_reduce(gauss_swap(extended)));
 }
 
-}  // namespace ekfn
+}  // namespace ahrs

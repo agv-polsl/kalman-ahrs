@@ -41,4 +41,4 @@ class Kalman {
     }
 };
 
-}  // namespace ekfn
+}  // namespace ahrs
