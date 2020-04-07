@@ -12,20 +12,20 @@ namespace ahrs {
 template <typename T, size_t N, size_t M>
 using array_2d = std::array<std::array<T, M>, N>;
 
-template <typename T, size_t N>
-constexpr array_2d<T, N, N> eye() {
-    array_2d<T, N, N> ret;
-    for (size_t i = 0; i < N; i++) {
-        ret[i][i] = 1;
-    }
-    return ret;
-}
-
 template <typename T, size_t N, size_t M>
 constexpr array_2d<T, N, M> zeros() {
     array_2d<T, N, M> ret;
     for (auto& row : ret) {
         std::fill(row.begin(), row.end(), 0);
+    }
+    return ret;
+}
+
+template <typename T, size_t N>
+constexpr array_2d<T, N, N> eye() {
+    auto ret = zeros<T, N, N>();
+    for (size_t i = 0; i < N; i++) {
+        ret[i][i] = 1;
     }
     return ret;
 }
