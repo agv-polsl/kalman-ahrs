@@ -9,14 +9,14 @@ struct sensor_readout {
 class Sensor {
    public:
     virtual sensor_readout read() = 0;
-    virtual ~Sensor();
+    virtual ~Sensor() {}
 };
 
 class CalibratedSensor {
    public:
     virtual sensor_readout read() = 0;
     virtual void calibrate_bias(int num_of_samples) = 0;
-    virtual ~CalibratedSensor();
+    virtual ~CalibratedSensor() {}
 
    protected:
     sensor_readout avg_n_readouts(int n);

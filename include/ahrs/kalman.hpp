@@ -7,8 +7,8 @@ namespace ahrs {
 class Kalman {
    public:
     Kalman(ahrs::array_2d<double, 4, 4> A, ahrs::array_2d<double, 4, 2> B,
-           ahrs::array_2d<double, 2, 4> H, double dt)
-        : A{A}, B{B}, H{H}, dt{dt} {}
+           ahrs::array_2d<double, 2, 4> H)
+        : A{A}, B{B}, H{H} {}
 
     auto update(ahrs::array_2d<double, 2, 1> input,
                 ahrs::array_2d<double, 2, 1> measurement) {
@@ -18,8 +18,6 @@ class Kalman {
     }
 
    private:
-    double dt;
-
     ahrs::array_2d<double, 4, 4> A;
     ahrs::array_2d<double, 4, 2> B;
     ahrs::array_2d<double, 2, 4> H;
