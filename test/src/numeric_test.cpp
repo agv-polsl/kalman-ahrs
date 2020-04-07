@@ -31,6 +31,12 @@ TEST(EkfNumericTest, Creates3By3EyeMatrix) {
     EXPECT_EQ(result, expected);
 }
 
+TEST(EkfNumericTest, Creates3By3ZerosMatrix) {
+    ahrs::array_2d<int, 3, 3> expected = {{{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}};
+    ahrs::array_2d<int, 3, 3> result = ahrs::zeros<int, 3, 3>();
+    EXPECT_EQ(result, expected);
+}
+
 TEST(EkfNumericTest, Adds3By3And3By3Correctly) {
     ahrs::array_2d<double, 3, 3> lhs = {
         {{9.11, 18.09, 10.28}, {6.57, 0.10, 11.99}, {15.77, 19.14, 12.43}}};

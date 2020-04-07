@@ -21,6 +21,15 @@ constexpr array_2d<T, N, N> eye() {
     return ret;
 }
 
+template <typename T, size_t N, size_t M>
+constexpr array_2d<T, N, M> zeros() {
+    array_2d<T, N, M> ret = {0};
+    for (auto& row : ret) {
+        std::fill(row.begin(), row.end(), 0);
+    }
+    return ret;
+}
+
 template <typename BinaryOperation, typename T, size_t N, size_t M>
 array_2d<T, N, M> element_wise(const array_2d<T, N, M>& lhs,
                                const array_2d<T, N, M>& rhs,
