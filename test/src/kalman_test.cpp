@@ -19,7 +19,7 @@ class KalmanFilterTest : public Test {
         ahrs::array_2d<double, 4, 2> B = {{{dt, 0}, {0, 0}, {0, dt}, {0, 0}}};
         ahrs::array_2d<double, 2, 4> H = {{{1, 0, 0, 0}, {0, 0, 1, 0}}};
 
-        kalman = std::make_unique<ahrs::Kalman>(A, B, H, dt);
+        kalman = std::make_unique<ahrs::Kalman>(A, B, H);
     }
 };
 

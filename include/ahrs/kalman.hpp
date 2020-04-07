@@ -7,8 +7,8 @@ namespace ahrs {
 class Kalman {
    public:
     Kalman(ahrs::array_2d<double, 4, 4> A, ahrs::array_2d<double, 4, 2> B,
-           ahrs::array_2d<double, 2, 4> H, double dt)
-        : A{A}, B{B}, H{H}, dt{dt} {}
+           ahrs::array_2d<double, 2, 4> H)
+        : A{A}, B{B}, H{H} {}
 
     auto update(ahrs::array_2d<double, 2, 1> input,
                 ahrs::array_2d<double, 2, 1> measurement) {
@@ -18,14 +18,12 @@ class Kalman {
     }
 
    private:
-    double dt;
-
     ahrs::array_2d<double, 4, 4> A;
     ahrs::array_2d<double, 4, 2> B;
     ahrs::array_2d<double, 2, 4> H;
 
-    ahrs::array_2d<double, 4, 1> x = {0};
-    ahrs::array_2d<double, 4, 4> P = {0};
+    ahrs::array_2d<double, 4, 1> x = ahrs::zeros<double, 4, 1>();
+    ahrs::array_2d<double, 4, 4> P = ahrs::zeros<double, 4, 4>();
 
     ahrs::array_2d<double, 4, 4> Q = ahrs::eye<double, 4>();
     ahrs::array_2d<double, 2, 2> R = ahrs::eye<double, 2>();
@@ -43,4 +41,4 @@ class Kalman {
     }
 };
 
-}  // namespace ekfn
+}  // namespace ahrs

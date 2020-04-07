@@ -1,13 +1,21 @@
 #include "ahrs/ahrs.hpp"
 
+#include <gmock/gmock-nice-strict.h>
 #include <gtest/gtest.h>
+
+#include "mocks.hpp"
 
 using namespace ::testing;
 using namespace ahrs;
 
 class AhrsTest : public Test {
    public:
-    ahrs::Ahrs ahrs;
+    NiceMock<SensorMock> gyro;
+    NiceMock<SensorMock> acc;
+    NiceMock<SensorMock> mag;
+    double dt = 0.01;
+
+    ahrs::Ahrs ahrs{gyro, acc, mag, dt};
 };
 
 TEST_F(AhrsTest, CalculatesPitchFromAccel) {

@@ -11,6 +11,10 @@ compile_commands.json
 # Build Directory
 build
 
+# Documentation output
+html
+latex
+
 # Prerequisites
 *.d
 

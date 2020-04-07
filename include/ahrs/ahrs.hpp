@@ -2,12 +2,18 @@
 
 #include <cmath>
 
+#include "ahrs/ahrs_sensors.hpp"
+#include "ahrs/kalman.hpp"
 #include "ahrs/numeric.hpp"
 
 namespace ahrs {
 
 class Ahrs {
    public:
+    Ahrs(Sensor& gyro, Sensor& acc, Sensor& mag, double dt);
+    void calibrate();
+    sensor_readout update();
+
     static double calc_pitch(const double acc_x, double const acc_z) {
         return std::atan(acc_x / ((acc_x * acc_x) + (acc_z * acc_z)));
     }
@@ -30,6 +36,12 @@ class Ahrs {
 
         return std::atan(-horizon_plane_y / horizon_plane_x);
     }
+
+   private:
+    ImuCalibratedSensor gyro;
+    ImuCalibratedSensor acc;
+    CompassCalibratedSensor mag;
+    Kalman kalman;
 };
 
 }  // namespace ahrs

@@ -3,7 +3,7 @@ project(ahrs LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_library(ahrs src/ahrs.cpp)
+add_library(ahrs src/ahrs.cpp src/ahrs_sensors.cpp)
 add_library(ahrs::ahrs ALIAS ahrs)
 
 target_include_directories(ahrs
@@ -26,6 +26,13 @@ target_compile_options(ahrs PRIVATE
     -Wconversion # Warn on type conversions that may lose data
     -Wsign-conversion # Warn on sign conversions
     -Wdouble-promotion # Warn if float is implicit promoted to double
+)
+
+# Target for generating documentation
+find_package(Doxygen)
+add_custom_target(docs
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/docs
+    COMMAND ${DOXYGEN_EXECUTABLE}
 )
 
 # Copy compile commands to project root after build
