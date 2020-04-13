@@ -30,19 +30,10 @@ target_compile_options(ahrs PRIVATE
 
 # Target for generating documentation
 find_package(Doxygen)
-add_custom_target(docs
+add_custom_target(ahrs-docs
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/docs
     COMMAND ${DOXYGEN_EXECUTABLE}
 )
-
-# Copy compile commands to project root after build
-if(CMAKE_EXPORT_COMPILE_COMMANDS STREQUAL ON)
-    add_custom_command(TARGET ahrs
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        ${PROJECT_BINARY_DIR}/compile_commands.json ${PROJECT_SOURCE_DIR}
-    )
-endif()
 
 enable_testing()
 add_subdirectory(test)
