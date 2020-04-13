@@ -1,4 +1,5 @@
-#pragma once
+#ifndef AHRS_H
+#define AHRS_H
 
 #include <cmath>
 
@@ -45,3 +46,5 @@ class Ahrs {
 };
 
 }  // namespace ahrs
+
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef NUMERIC_H
+#define NUMERIC_H
 
 #include <algorithm>
 #include <array>
@@ -172,3 +173,5 @@ array_2d<T, N, N> inv(const array_2d<T, N, N>& arr) {
 }
 
 }  // namespace ahrs
+
+#endif

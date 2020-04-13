@@ -1,4 +1,5 @@
-#pragma once
+#ifndef KALMAN_H
+#define KALMAN_H
 
 #include "ahrs/numeric.h"
 
@@ -42,3 +43,5 @@ class Kalman {
 };
 
 }  // namespace ahrs
+
+#endif

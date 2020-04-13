@@ -1,4 +1,5 @@
-#pragma once
+#ifndef AHRS_SENSORS_H
+#define AHRS_SENSORS_H
 
 namespace ahrs {
 
@@ -48,3 +49,5 @@ class CompassCalibratedSensor : public CalibratedSensor {
 };
 
 }  // namespace ahrs
+
+#endif
