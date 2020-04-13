@@ -157,10 +157,10 @@ template <typename T, size_t N, size_t M>
 array_2d<T, N, N> extract_inv(const array_2d<T, N, M>& arr) {
     static_assert(M == 2 * N,
                   "Extended matrix must have twice more columns than rows");
-    array_2d<T, N, N> ret;
+    array_2d<T, N, N> ret = zeros<T, N, N>();
     /* Copy right half of the extended matrix */
-    for (size_t i = 1; i < N + 1; i++) {
-        std::copy_n(arr[i].rend(), N, ret[i].rend());
+    for (size_t i = 0; i < N; i++) {
+        std::copy_n(arr[i + 1].rend(), N, ret[i + 1].rend());
     }
     return ret;
 }
