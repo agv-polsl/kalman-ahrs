@@ -1,4 +1,4 @@
-#include "ahrs/ahrs.hpp"
+#include "ahrs/ahrs.h"
 
 namespace ahrs {
 

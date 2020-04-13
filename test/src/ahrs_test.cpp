@@ -1,9 +1,9 @@
-#include "ahrs/ahrs.hpp"
+#include "ahrs/ahrs.h"
 
 #include <gmock/gmock-nice-strict.h>
 #include <gtest/gtest.h>
 
-#include "mocks.hpp"
+#include "mocks.h"
 
 using namespace ::testing;
 using namespace ahrs;

@@ -1,4 +1,4 @@
-#include "ahrs/ahrs_sensors.hpp"
+#include "ahrs/ahrs_sensors.h"
 
 namespace ahrs {
 

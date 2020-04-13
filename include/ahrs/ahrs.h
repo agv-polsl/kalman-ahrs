@@ -2,9 +2,9 @@
 
 #include <cmath>
 
-#include "ahrs/ahrs_sensors.hpp"
-#include "ahrs/kalman.hpp"
-#include "ahrs/numeric.hpp"
+#include "ahrs/ahrs_sensors.h"
+#include "ahrs/kalman.h"
+#include "ahrs/numeric.h"
 
 namespace ahrs {
 

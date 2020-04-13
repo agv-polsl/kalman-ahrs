@@ -1,4 +1,4 @@
-#include "ahrs/kalman.hpp"
+#include "ahrs/kalman.h"
 
 #include <gtest/gtest.h>
 

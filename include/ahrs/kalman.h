@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ahrs/numeric.hpp"
+#include "ahrs/numeric.h"
 
 namespace ahrs {
 
