@@ -26,16 +26,14 @@ class Ahrs {
     static double calc_yaw(const double pitch, const double roll,
                            const double mag_x, const double mag_y,
                            const double mag_z) {
-        /* TODO: This may be wrong due to the inconvenience in the reference
-         * academic paper, for now it is left as is for the sake of continuing
-         * development. This must be resolved in future.
-         */
+
+        /* Tilt compensation formula */
         auto horizon_plane_x = mag_x * cos(pitch) +
                                mag_y * sin(pitch) * sin(roll) +
                                mag_z * sin(pitch) + cos(roll);
-        auto horizon_plane_y = mag_y * cos(roll) + mag_z * sin(roll);
+        auto horizon_plane_y = mag_y * cos(roll) - mag_z * sin(roll);
 
-        return std::atan(-horizon_plane_y / horizon_plane_x);
+        return std::atan2(-horizon_plane_y, horizon_plane_x);
     }
 
    private:
