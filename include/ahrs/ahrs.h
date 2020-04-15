@@ -13,6 +13,7 @@ class Ahrs {
    public:
     Ahrs(Sensor& gyro, Sensor& acc, Sensor& mag, double dt);
     void calibrate();
+    void set_dt(double new_dt);
     sensor_readout update();
 
     static double calc_pitch(const double acc_x, double const acc_z) {
@@ -26,8 +27,6 @@ class Ahrs {
     static double calc_yaw(const double pitch, const double roll,
                            const double mag_x, const double mag_y,
                            const double mag_z) {
-
-        /* Tilt compensation formula */
         auto horizon_plane_x = mag_x * cos(pitch) +
                                mag_y * sin(pitch) * sin(roll) +
                                mag_z * sin(pitch) + cos(roll);

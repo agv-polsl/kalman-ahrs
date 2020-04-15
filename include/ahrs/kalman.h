@@ -18,11 +18,11 @@ class Kalman {
         return x;
     }
 
-   private:
     ahrs::array_2d<double, 4, 4> A;
     ahrs::array_2d<double, 4, 2> B;
     ahrs::array_2d<double, 2, 4> H;
 
+   private:
     ahrs::array_2d<double, 4, 1> x = ahrs::zeros<double, 4, 1>();
     ahrs::array_2d<double, 4, 4> P = ahrs::zeros<double, 4, 4>();
 

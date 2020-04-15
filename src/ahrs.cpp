@@ -18,6 +18,13 @@ void Ahrs::calibrate() {
     mag.calibrate_bias();
 }
 
+void Ahrs::set_dt(double dt) {
+    kalman.A[0][1] = -dt;
+    kalman.A[2][3] = -dt;
+    kalman.B[0][0] = dt;
+    kalman.B[3][1] = dt;
+}
+
 sensor_readout Ahrs::update() {
     auto gr = gyro.read();
     auto ar = acc.read();
