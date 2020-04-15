@@ -15,6 +15,7 @@ class Ahrs {
     void calibrate();
     void set_dt(double new_dt);
     sensor_readout update();
+    sensor_readout update(double dt);
 
     static double calc_pitch(const double acc_x, double const acc_z) {
         return std::atan(acc_x / ((acc_x * acc_x) + (acc_z * acc_z)));

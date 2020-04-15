@@ -40,4 +40,9 @@ sensor_readout Ahrs::update() {
     return {res[0][0], res[0][2], yaw};
 }
 
+sensor_readout Ahrs::update(double dt) {
+    set_dt(dt);
+    return update();
+}
+
 }  // namespace ahrs
