@@ -1,6 +1,10 @@
 #include "ahrs/ahrs.h"
 
+#include <cmath>
+
 namespace ahrs {
+
+double to_deg(double rad) { return rad * 180 / M_PI; }
 
 Ahrs::Ahrs(Sensor& gyro, Sensor& acc, Sensor& mag, double dt)
     : gyro{gyro},
@@ -33,11 +37,11 @@ sensor_readout Ahrs::update() {
     auto pitch = calc_pitch(ar.x, ar.z);
     auto roll = calc_roll(ar.y, ar.z);
 
-    auto res = kalman.update({{{gr.x}, {gr.y}}}, {{{pitch}, {roll}}});
+    auto res = kalman.update({{{gr.x}, {gr.y}}}, {{{roll}, {pitch}}});
 
     auto yaw = calc_yaw(res[0][0], res[0][2], mr.x, mr.y, mr.z);
 
-    return {res[0][0], res[0][2], yaw};
+    return {to_deg(res[0][0]), to_deg(res[0][2]), to_deg(yaw)};
 }
 
 sensor_readout Ahrs::update(double dt) {
