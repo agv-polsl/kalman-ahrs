@@ -24,8 +24,8 @@ class Kalman {
 
    private:
     ahrs::array_2d<double, 4, 1> x = ahrs::zeros<double, 4, 1>();
-    ahrs::array_2d<double, 4, 4> P = ahrs::zeros<double, 4, 4>();
 
+    ahrs::array_2d<double, 4, 4> P = ahrs::eye<double, 4>();
     ahrs::array_2d<double, 4, 4> Q = ahrs::eye<double, 4>();
     ahrs::array_2d<double, 2, 2> R = ahrs::eye<double, 2>();
 

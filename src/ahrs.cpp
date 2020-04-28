@@ -7,9 +7,9 @@ namespace ahrs {
 double to_deg(double rad) { return rad * 180 / M_PI; }
 
 Ahrs::Ahrs(Sensor& gyro, Sensor& acc, Sensor& mag, double dt)
-    : gyro{gyro},
-      acc{acc},
-      mag{mag},
+    : gyro_{gyro},
+      acc_{acc},
+      mag_{mag},
       kalman{{{{1, -dt, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, -dt}, {0, 0, 0, 1}}},
              {{{dt, 0}, {0, 0}, {0, dt}, {0, 0}}},
              {{{1, 0, 0, 0}, {0, 0, 1, 0}}}} {
@@ -17,31 +17,32 @@ Ahrs::Ahrs(Sensor& gyro, Sensor& acc, Sensor& mag, double dt)
 }
 
 void Ahrs::calibrate() {
-    gyro.calibrate_bias();
-    acc.calibrate_bias();
-    mag.calibrate_bias();
+    gyro_.calibrate_bias();
+    acc_.calibrate_bias();
+    mag_.calibrate_bias();
 }
 
 void Ahrs::set_dt(double dt) {
     kalman.A[0][1] = -dt;
     kalman.A[2][3] = -dt;
     kalman.B[0][0] = dt;
-    kalman.B[3][1] = dt;
+    kalman.B[2][1] = dt;
 }
 
 sensor_readout Ahrs::update() {
-    auto gr = gyro.read();
-    auto ar = acc.read();
-    auto mr = mag.read();
+    auto gr = gyro_.read();
+    auto ar = acc_.read();
+    auto mr = mag_.read();
 
-    auto roll = calc_roll(ar);
-    auto pitch = calc_pitch(ar);
+    auto system_input_vector = calc_euler_angles_rates(gr);
+    auto estimate_vector = calc_estimate(ar);
 
-    auto res = kalman.update({{{gr.x}, {gr.y}}}, {{{roll}, {pitch}}});
-
+    auto res = kalman.update(system_input_vector, estimate_vector);
     auto yaw = calc_yaw(res[0][0], res[0][2], mr);
 
-    return {to_deg(res[0][0]), to_deg(res[0][2]), to_deg(yaw)};
+    state = {to_deg(res[0][0]), to_deg(res[0][2]), to_deg(yaw)};
+
+    return state;
 }
 
 sensor_readout Ahrs::update(double dt) {

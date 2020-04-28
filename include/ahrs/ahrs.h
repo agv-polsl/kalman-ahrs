@@ -25,7 +25,7 @@ class Ahrs {
         return std::atan2(-acc.x, sqrt(pow(acc.y, 2) + pow(acc.z, 2)));
     }
 
-    static double calc_yaw(const double pitch, const double roll,
+    static double calc_yaw(const double roll, const double pitch,
                            const sensor_readout mag) {
         auto horizon_plane_x = mag.x * cos(pitch) +
                                mag.y * sin(pitch) * sin(roll) +
@@ -36,10 +36,26 @@ class Ahrs {
     }
 
    private:
-    ImuCalibratedSensor gyro;
-    ImuCalibratedSensor acc;
-    CompassCalibratedSensor mag;
+    ahrs::array_2d<double, 2, 1> calc_euler_angles_rates(sensor_readout gyro) {
+        auto roll_rate = gyro.x + sin(state.x) * tan(state.y) * gyro.y +
+                         cos(state.x) * tan(state.y) * gyro.z;
+        auto pitch_rate = cos(state.x) * gyro.y - sin(state.x) * gyro.z;
+
+        return {{{roll_rate}, {pitch_rate}}};
+    }
+
+    ahrs::array_2d<double, 2, 1> calc_estimate(sensor_readout acc) {
+        auto roll_estimate = calc_roll(acc);
+        auto pitch_estitmate = calc_pitch(acc);
+
+        return {{{roll_estimate}, {pitch_estitmate}}};
+    }
+
+    ImuCalibratedSensor gyro_;
+    ImuCalibratedSensor acc_;
+    CompassCalibratedSensor mag_;
     Kalman kalman;
+    sensor_readout state = {0, 0, 0};
 };
 
 }  // namespace ahrs
