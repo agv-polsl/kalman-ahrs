@@ -18,22 +18,16 @@ class AhrsTest : public Test {
     ahrs::Ahrs ahrs{gyro, acc, mag, dt};
 };
 
-TEST_F(AhrsTest, CalculatesPitchFromAccel) {
-    double acc_x = 0.3256;
-    double acc_z = -0.6646;
-
-    double expected = 0.5363;
-
-    EXPECT_NEAR(ahrs.calc_pitch(acc_x, acc_z), expected, 0.0001);
+TEST_F(AhrsTest, CalculatesRollFromAccel) {
+    const sensor_readout acc{0.32, -0.1, 1.2};
+    const double expected = -0.0803;
+    EXPECT_NEAR(ahrs.calc_roll(acc), expected, 0.0001);
 }
 
-TEST_F(AhrsTest, CalculatesRollFromAccel) {
-    double acc_y = 9.8569;
-    double acc_z = -0.6646;
-
-    double expected = 0.1007;
-
-    EXPECT_NEAR(ahrs.calc_pitch(acc_y, acc_z), expected, 0.0001);
+TEST_F(AhrsTest, CalculatesPitchFromAccel) {
+    const sensor_readout acc{0.32, -0.1, 1.2};
+    const double expected = -0.2597;
+    EXPECT_NEAR(ahrs.calc_pitch(acc), expected, 0.0001);
 }
 
 TEST_F(AhrsTest, CalcualtesYawFromMagAndRollPitch) {

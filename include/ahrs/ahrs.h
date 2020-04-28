@@ -17,21 +17,20 @@ class Ahrs {
     sensor_readout update();
     sensor_readout update(double dt);
 
-    static double calc_pitch(const double acc_x, double const acc_z) {
-        return std::atan(acc_x / ((acc_x * acc_x) + (acc_z * acc_z)));
+    static double calc_roll(const sensor_readout acc) {
+        return std::atan2(acc.y, sqrt(pow(acc.x, 2) + pow(acc.z, 2)));
     }
 
-    static double calc_roll(const double acc_y, const double acc_z) {
-        return std::atan(acc_y / ((acc_y * acc_y) + (acc_z * acc_z)));
+    static double calc_pitch(const sensor_readout acc) {
+        return std::atan2(-acc.x, sqrt(pow(acc.y, 2) + pow(acc.z, 2)));
     }
 
     static double calc_yaw(const double pitch, const double roll,
-                           const double mag_x, const double mag_y,
-                           const double mag_z) {
-        auto horizon_plane_x = mag_x * cos(pitch) +
-                               mag_y * sin(pitch) * sin(roll) +
-                               mag_z * sin(pitch) + cos(roll);
-        auto horizon_plane_y = mag_y * cos(roll) - mag_z * sin(roll);
+                           const sensor_readout mag) {
+        auto horizon_plane_x = mag.x * cos(pitch) +
+                               mag.y * sin(pitch) * sin(roll) +
+                               mag.z * sin(pitch) + cos(roll);
+        auto horizon_plane_y = mag.y * cos(roll) - mag.z * sin(roll);
 
         return std::atan2(-horizon_plane_y, horizon_plane_x);
     }

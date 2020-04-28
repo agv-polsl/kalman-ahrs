@@ -34,12 +34,12 @@ sensor_readout Ahrs::update() {
     auto ar = acc.read();
     auto mr = mag.read();
 
-    auto pitch = calc_pitch(ar.x, ar.z);
-    auto roll = calc_roll(ar.y, ar.z);
+    auto roll = calc_roll(ar);
+    auto pitch = calc_pitch(ar);
 
     auto res = kalman.update({{{gr.x}, {gr.y}}}, {{{roll}, {pitch}}});
 
-    auto yaw = calc_yaw(res[0][0], res[0][2], mr.x, mr.y, mr.z);
+    auto yaw = calc_yaw(res[0][0], res[0][2], mr);
 
     return {to_deg(res[0][0]), to_deg(res[0][2]), to_deg(yaw)};
 }
