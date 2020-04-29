@@ -23,10 +23,10 @@ constexpr array_2d<T, N, M> zeros() {
 }
 
 template <typename T, size_t N>
-constexpr array_2d<T, N, N> eye() {
+constexpr array_2d<T, N, N> eye(double val = 1) {
     auto ret = zeros<T, N, N>();
     for (size_t i = 0; i < N; i++) {
-        ret[i][i] = 1;
+        ret[i][i] = val;
     }
     return ret;
 }
