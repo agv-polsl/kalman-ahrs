@@ -22,7 +22,7 @@ class Ahrs {
     }
 
     static double calc_pitch(const sensor_readout acc) {
-        return std::atan2(-acc.x, sqrt(pow(acc.y, 2) + pow(acc.z, 2)));
+        return std::atan2(acc.x, sqrt(pow(acc.y, 2) + pow(acc.z, 2)));
     }
 
     static double calc_yaw(const double roll, const double pitch,
