@@ -3,7 +3,7 @@
 namespace ahrs {
 
 sensor_readout CalibratedSensor::avg_n_readouts(int n) {
-    sensor_readout read_sum;
+    sensor_readout read_sum = {0.0, 0.0, 0.0};
     for (int i = 0; i < n; i++) {
         auto readout = read();
         read_sum.x += readout.x;
