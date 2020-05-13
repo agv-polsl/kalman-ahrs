@@ -43,13 +43,43 @@ void CompassCalibratedSensor::calibrate_bias(int num_of_samples) {
     calibrate_soft_iron(num_of_samples);
 }
 
+sensor_readout update_min(sensor_readout readout, sensor_readout minr) {
+    if (readout.x < minr.x) { minr.x = readout.x; }
+    if (readout.y < minr.y) { minr.y = readout.y; }
+    if (readout.z < minr.z) { minr.z = readout.z; }
+    return minr;
+}
+
+sensor_readout update_max(sensor_readout readout, sensor_readout maxr) {
+    if (readout.x > maxr.x) { maxr.x = readout.x; }
+    if (readout.y > maxr.y) { maxr.y = readout.y; }
+    if (readout.z > maxr.z) { maxr.z = readout.z; }
+    return maxr;
+}
+
 void CompassCalibratedSensor::calibrate_hard_iron(int num_of_samples) {
-    hard_iron_bias = avg_n_readouts(num_of_samples);
+    sensor_readout maxr = {0.0, 0.0, 0.0};
+    sensor_readout minr = {0.0, 0.0, 0.0};
+    for (int i = 0; i < num_of_samples; i++) {
+        auto readout = read();
+        maxr = update_max(readout, maxr);
+        minr = update_min(readout, minr);
+    }
+
+    hard_iron_bias = { (maxr.x + minr.x) / 2, (maxr.y + minr.y) / 2 , (maxr.z + minr.z) / 2 };
 }
 
 void CompassCalibratedSensor::calibrate_soft_iron(int num_of_samples) {
-    auto avg = avg_n_readouts(num_of_samples);
-    auto avg_combined_axes = (avg.x + avg.y + avg.z / 3);
+    sensor_readout maxr = {0.0, 0.0, 0.0};
+    sensor_readout minr = {0.0, 0.0, 0.0};
+    for (int i = 0; i < num_of_samples; i++) {
+        auto readout = read();
+        maxr = update_max(readout, maxr);
+        minr = update_min(readout, minr);
+    }
+
+    sensor_readout avg = { (maxr.x - minr.x) / 2, (maxr.y - minr.y) / 2 , (maxr.z - minr.z) / 2 };
+    double avg_combined_axes = (avg.x + avg.y + avg.z / 3);
     soft_iron_bias = {avg_combined_axes / avg.x, avg_combined_axes / avg.y,
                       avg_combined_axes / avg.z};
 }
