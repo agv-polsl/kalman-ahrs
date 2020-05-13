@@ -12,7 +12,8 @@ namespace ahrs {
 class Ahrs {
    public:
     Ahrs(Sensor& gyro, Sensor& acc, Sensor& mag, double dt);
-    void calibrate();
+    void calibrate_imu();
+    void calibrate_mag();
     void set_dt(double new_dt);
     sensor_readout update();
     sensor_readout update(double dt);

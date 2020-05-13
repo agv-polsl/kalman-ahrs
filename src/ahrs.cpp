@@ -15,9 +15,12 @@ Ahrs::Ahrs(Sensor& gyro, Sensor& acc, Sensor& mag, double dt)
              {{{1, 0, 0, 0}, {0, 0, 1, 0}}}} {
 }
 
-void Ahrs::calibrate() {
+void Ahrs::calibrate_imu() {
     gyro_.calibrate_bias();
     acc_.calibrate_bias();
+}
+
+void Ahrs::calibrate_mag() {
     mag_.calibrate_bias();
 }
 

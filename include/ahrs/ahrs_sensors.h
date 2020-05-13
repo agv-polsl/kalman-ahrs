@@ -38,7 +38,7 @@ class CompassCalibratedSensor : public CalibratedSensor {
    public:
     CompassCalibratedSensor(Sensor& compass) : compass{compass} {}
     sensor_readout read() override;
-    void calibrate_bias(int num_of_samples = 100) override;
+    void calibrate_bias(int num_of_samples = 1000) override;
     void calibrate_hard_iron(int num_of_samples = 1000);
     void calibrate_soft_iron(int num_of_samples = 1000);
 
