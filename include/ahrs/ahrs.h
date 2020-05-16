@@ -13,7 +13,7 @@ class Ahrs {
    public:
     Ahrs(Sensor& gyro, Sensor& acc, Sensor& mag, double dt);
     void calibrate_imu();
-    void calibrate_mag();
+    void calibrate_mag(int num_of_samples = 1000);
     void set_dt(double new_dt);
     sensor_readout update();
     sensor_readout update(double dt);
@@ -23,14 +23,14 @@ class Ahrs {
     }
 
     static double calc_pitch(const sensor_readout acc) {
-        return std::atan2(acc.x, sqrt(pow(acc.y, 2) + pow(acc.z, 2)));
+        return std::atan2(-acc.x, sqrt(pow(acc.y, 2) + pow(acc.z, 2)));
     }
 
     static double calc_yaw(const double roll, const double pitch,
                            const sensor_readout mag) {
         auto horizon_plane_x = mag.x * cos(pitch) +
                                mag.y * sin(pitch) * sin(roll) +
-                               mag.z * sin(pitch) + cos(roll);
+                               mag.z * sin(pitch) * cos(roll);
         auto horizon_plane_y = mag.y * cos(roll) - mag.z * sin(roll);
 
         return std::atan2(-horizon_plane_y, horizon_plane_x);

@@ -20,8 +20,8 @@ void Ahrs::calibrate_imu() {
     acc_.calibrate_bias();
 }
 
-void Ahrs::calibrate_mag() {
-    mag_.calibrate_bias();
+void Ahrs::calibrate_mag(int num_of_samples) {
+    mag_.calibrate_bias(num_of_samples);
 }
 
 void Ahrs::set_dt(double dt) {
