@@ -63,12 +63,12 @@ sensor_readout CompassCalibratedSensor::update_max(sensor_readout newr,
 }
 
 void CompassCalibratedSensor::calibrate_hard_iron(int num_of_samples) {
-    auto [maxr, minr] = find_minmax_in_each_dimension(num_of_samples);
+    auto [minr, maxr] = find_minmax_in_each_dimension(num_of_samples);
     hard_iron_bias = (maxr + minr) / 2;
 }
 
 void CompassCalibratedSensor::calibrate_soft_iron(int num_of_samples) {
-    auto [maxr, minr] = find_minmax_in_each_dimension(num_of_samples);
+    auto [minr, maxr] = find_minmax_in_each_dimension(num_of_samples);
     sensor_readout radius = (maxr - minr) / 2;
     double avg_radius = (radius.x + radius.y + radius.z / 3);
     soft_iron_bias = {avg_radius / radius.x, avg_radius / radius.y,
