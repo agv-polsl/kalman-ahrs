@@ -4,20 +4,16 @@ namespace ahrs {
 
 sensor_readout ImuCalibratedSensor::read() {
     auto readout = imu_sensor.read();
-    return {readout.x - offset_bias.x, readout.y - offset_bias.y,
-            readout.z - offset_bias.z};
+    return readout - offset_bias;
 }
 
 sensor_readout ImuCalibratedSensor::avg_n_readouts(int n) {
     sensor_readout read_sum = {0.0, 0.0, 0.0};
     for (int i = 0; i < n; i++) {
         auto readout = read();
-        read_sum.x += readout.x;
-        read_sum.y += readout.y;
-        read_sum.z += readout.z;
+        read_sum += readout;
     }
-
-    return {read_sum.x / n, read_sum.y / n, read_sum.y / n};
+    return read_sum / n;
 }
 
 void ImuCalibratedSensor::calibrate_bias(int num_of_samples) {
@@ -26,13 +22,7 @@ void ImuCalibratedSensor::calibrate_bias(int num_of_samples) {
 
 sensor_readout CompassCalibratedSensor::read() {
     auto readout = compass.read();
-
-    readout = {readout.x - hard_iron_bias.x, readout.y - hard_iron_bias.y,
-               readout.z - hard_iron_bias.z};
-    readout = {readout.x * soft_iron_bias.x, readout.y * soft_iron_bias.y,
-               readout.z * soft_iron_bias.z};
-
-    return readout;
+    return (readout - hard_iron_bias) * soft_iron_bias;
 }
 
 void CompassCalibratedSensor::calibrate_bias(int num_of_samples) {
@@ -41,6 +31,19 @@ void CompassCalibratedSensor::calibrate_bias(int num_of_samples) {
      */
     calibrate_hard_iron(num_of_samples);
     calibrate_soft_iron(num_of_samples);
+}
+
+std::array<sensor_readout, 2>
+CompassCalibratedSensor::find_minmax_in_each_dimension(int num_of_samples) {
+    sensor_readout maxr = {0.0, 0.0, 0.0};
+    sensor_readout minr = {0.0, 0.0, 0.0};
+
+    for (int i = 0; i < num_of_samples; i++) {
+        auto readout = read();
+        maxr = update_max(readout, maxr);
+        minr = update_min(readout, minr);
+    }
+    return {minr, maxr};
 }
 
 sensor_readout CompassCalibratedSensor::update_min(sensor_readout newr,
@@ -56,36 +59,20 @@ sensor_readout CompassCalibratedSensor::update_max(sensor_readout newr,
     if (newr.x > maxr.x) { maxr.x = newr.x; }
     if (newr.y > maxr.y) { maxr.y = newr.y; }
     if (newr.z > maxr.z) { maxr.z = newr.z; }
-
     return maxr;
 }
 
 void CompassCalibratedSensor::calibrate_hard_iron(int num_of_samples) {
-    sensor_readout maxr = {0.0, 0.0, 0.0};
-    sensor_readout minr = {0.0, 0.0, 0.0};
-    for (int i = 0; i < num_of_samples; i++) {
-        auto readout = read();
-        maxr = update_max(readout, maxr);
-        minr = update_min(readout, minr);
-    }
-
-    hard_iron_bias = {(maxr.x + minr.x) / 2, (maxr.y + minr.y) / 2,
-                      (maxr.z + minr.z) / 2};
+    auto [maxr, minr] = find_minmax_in_each_dimension(num_of_samples);
+    hard_iron_bias = (maxr + minr) / 2;
 }
 
 void CompassCalibratedSensor::calibrate_soft_iron(int num_of_samples) {
-    sensor_readout maxr = {0.0, 0.0, 0.0};
-    sensor_readout minr = {0.0, 0.0, 0.0};
-    for (int i = 0; i < num_of_samples; i++) {
-        auto readout = read();
-        maxr = update_max(readout, maxr);
-        minr = update_min(readout, minr);
-    }
-
-    sensor_readout avg = { (maxr.x - minr.x) / 2, (maxr.y - minr.y) / 2 , (maxr.z - minr.z) / 2 };
-    double avg_combined_axes = (avg.x + avg.y + avg.z / 3);
-    soft_iron_bias = {avg_combined_axes / avg.x, avg_combined_axes / avg.y,
-                      avg_combined_axes / avg.z};
+    auto [maxr, minr] = find_minmax_in_each_dimension(num_of_samples);
+    sensor_readout radius = (maxr - minr) / 2;
+    double avg_radius = (radius.x + radius.y + radius.z / 3);
+    soft_iron_bias = {avg_radius / radius.x, avg_radius / radius.y,
+                      avg_radius / radius.z};
 }
 
 }  // namespace ahrs

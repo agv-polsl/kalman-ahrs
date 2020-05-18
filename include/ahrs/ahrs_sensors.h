@@ -38,6 +38,8 @@ class CompassCalibratedSensor {
     sensor_readout hard_iron_bias = {0.0, 0.0, 0.0};
     sensor_readout soft_iron_bias = {1.0, 1.0, 1.0};
 
+    std::array<sensor_readout, 2>
+    find_minmax_in_each_dimension(int num_of_samples);
     static sensor_readout update_min(sensor_readout newr, sensor_readout minr);
     static sensor_readout update_max(sensor_readout newr, sensor_readout maxr);
 };
