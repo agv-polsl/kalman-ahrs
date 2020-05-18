@@ -43,17 +43,20 @@ void CompassCalibratedSensor::calibrate_bias(int num_of_samples) {
     calibrate_soft_iron(num_of_samples);
 }
 
-sensor_readout update_min(sensor_readout readout, sensor_readout minr) {
-    if (readout.x < minr.x) { minr.x = readout.x; }
-    if (readout.y < minr.y) { minr.y = readout.y; }
-    if (readout.z < minr.z) { minr.z = readout.z; }
+sensor_readout CompassCalibratedSensor::update_min(sensor_readout newr,
+                                                   sensor_readout minr) {
+    if (newr.x < minr.x) { minr.x = newr.x; }
+    if (newr.y < minr.y) { minr.y = newr.y; }
+    if (newr.z < minr.z) { minr.z = newr.z; }
     return minr;
 }
 
-sensor_readout update_max(sensor_readout readout, sensor_readout maxr) {
-    if (readout.x > maxr.x) { maxr.x = readout.x; }
-    if (readout.y > maxr.y) { maxr.y = readout.y; }
-    if (readout.z > maxr.z) { maxr.z = readout.z; }
+sensor_readout CompassCalibratedSensor::update_max(sensor_readout newr,
+                                                   sensor_readout maxr) {
+    if (newr.x > maxr.x) { maxr.x = newr.x; }
+    if (newr.y > maxr.y) { maxr.y = newr.y; }
+    if (newr.z > maxr.z) { maxr.z = newr.z; }
+
     return maxr;
 }
 
@@ -66,7 +69,8 @@ void CompassCalibratedSensor::calibrate_hard_iron(int num_of_samples) {
         minr = update_min(readout, minr);
     }
 
-    hard_iron_bias = { (maxr.x + minr.x) / 2, (maxr.y + minr.y) / 2 , (maxr.z + minr.z) / 2 };
+    hard_iron_bias = {(maxr.x + minr.x) / 2, (maxr.y + minr.y) / 2,
+                      (maxr.z + minr.z) / 2};
 }
 
 void CompassCalibratedSensor::calibrate_soft_iron(int num_of_samples) {

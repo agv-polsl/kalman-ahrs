@@ -1,11 +1,10 @@
 #ifndef AHRS_SENSORS_H
 #define AHRS_SENSORS_H
 
-namespace ahrs {
+#include "ahrs/numeric.h"
+#include "ahrs/sensor_readout.h"
 
-struct sensor_readout {
-    double x, y, z;
-};
+namespace ahrs {
 
 class Sensor {
    public:
@@ -13,30 +12,24 @@ class Sensor {
     virtual ~Sensor() {}
 };
 
-class CalibratedSensor {
-   public:
-    virtual sensor_readout read() = 0;
-    virtual void calibrate_bias(int num_of_samples) = 0;
-    virtual ~CalibratedSensor() {}
-};
-
-class ImuCalibratedSensor : public CalibratedSensor {
+class ImuCalibratedSensor {
    public:
     ImuCalibratedSensor(Sensor& imu_sensor) : imu_sensor{imu_sensor} {}
-    sensor_readout read() override;
-    void calibrate_bias(int num_of_samples = 100) override;
+    sensor_readout read();
+    void calibrate_bias(int num_of_samples = 100);
 
    private:
     Sensor& imu_sensor;
     sensor_readout offset_bias = {0.0, 0.0, 0.0};
+
     sensor_readout avg_n_readouts(int n);
 };
 
-class CompassCalibratedSensor : public CalibratedSensor {
+class CompassCalibratedSensor {
    public:
     CompassCalibratedSensor(Sensor& compass) : compass{compass} {}
-    sensor_readout read() override;
-    void calibrate_bias(int num_of_samples = 1000) override;
+    sensor_readout read();
+    void calibrate_bias(int num_of_samples = 1000);
     void calibrate_hard_iron(int num_of_samples = 1000);
     void calibrate_soft_iron(int num_of_samples = 1000);
 
@@ -44,6 +37,9 @@ class CompassCalibratedSensor : public CalibratedSensor {
     Sensor& compass;
     sensor_readout hard_iron_bias = {0.0, 0.0, 0.0};
     sensor_readout soft_iron_bias = {1.0, 1.0, 1.0};
+
+    static sensor_readout update_min(sensor_readout newr, sensor_readout minr);
+    static sensor_readout update_max(sensor_readout newr, sensor_readout maxr);
 };
 
 }  // namespace ahrs
