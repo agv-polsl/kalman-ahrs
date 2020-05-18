@@ -12,7 +12,7 @@ target_include_directories(ahrs
     PRIVATE
         ${PROJECT_SOURCE_DIR}/src
 )
-target_compile_features(ahrs PUBLIC cxx_std_20)
+target_compile_features(ahrs PUBLIC cxx_std_17)
 target_compile_options(ahrs PRIVATE
     -Wall
     -Wextra
