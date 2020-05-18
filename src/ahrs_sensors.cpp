@@ -2,7 +2,13 @@
 
 namespace ahrs {
 
-sensor_readout CalibratedSensor::avg_n_readouts(int n) {
+sensor_readout ImuCalibratedSensor::read() {
+    auto readout = imu_sensor.read();
+    return {readout.x - offset_bias.x, readout.y - offset_bias.y,
+            readout.z - offset_bias.z};
+}
+
+sensor_readout ImuCalibratedSensor::avg_n_readouts(int n) {
     sensor_readout read_sum = {0.0, 0.0, 0.0};
     for (int i = 0; i < n; i++) {
         auto readout = read();
@@ -12,12 +18,6 @@ sensor_readout CalibratedSensor::avg_n_readouts(int n) {
     }
 
     return {read_sum.x / n, read_sum.y / n, read_sum.y / n};
-}
-
-sensor_readout ImuCalibratedSensor::read() {
-    auto readout = imu_sensor.read();
-    return {readout.x - offset_bias.x, readout.y - offset_bias.y,
-            readout.z - offset_bias.z};
 }
 
 void ImuCalibratedSensor::calibrate_bias(int num_of_samples) {

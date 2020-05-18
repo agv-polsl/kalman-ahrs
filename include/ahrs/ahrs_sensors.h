@@ -18,9 +18,6 @@ class CalibratedSensor {
     virtual sensor_readout read() = 0;
     virtual void calibrate_bias(int num_of_samples) = 0;
     virtual ~CalibratedSensor() {}
-
-   protected:
-    sensor_readout avg_n_readouts(int n);
 };
 
 class ImuCalibratedSensor : public CalibratedSensor {
@@ -32,6 +29,7 @@ class ImuCalibratedSensor : public CalibratedSensor {
    private:
     Sensor& imu_sensor;
     sensor_readout offset_bias = {0.0, 0.0, 0.0};
+    sensor_readout avg_n_readouts(int n);
 };
 
 class CompassCalibratedSensor : public CalibratedSensor {
