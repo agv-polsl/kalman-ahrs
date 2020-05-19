@@ -2,12 +2,27 @@
 #define SENSOR_READOUT_H
 
 #include <functional>
+#include <ostream>
 
 namespace ahrs {
 
 struct sensor_readout {
     double x, y, z;
 
+    std::ostream& operator<<(std::ostream& os) {
+        os << x << ' ' << y << ' ' << z;
+        return os;
+    }
+
+    template <typename T>
+    bool operator==(const T rhs) {
+        return element_wise(rhs, std::equal_to<double>());
+    }
+
+    template <typename T>
+    bool operator!=(const T rhs) {
+        return element_wise(rhs, std::not_equal_to<double>());
+    }
     template <typename T>
     sensor_readout operator+(const T rhs) {
         return element_wise(rhs, std::plus<double>());
@@ -63,7 +78,7 @@ struct sensor_readout {
     template <typename BinaryOperation>
     sensor_readout element_wise(const double rhs, BinaryOperation operation) {
         return {std::invoke(operation, x, rhs),
-			    std::invoke(operation, y, rhs),
+                std::invoke(operation, y, rhs),
                 std::invoke(operation, z, rhs)};
     }
 };

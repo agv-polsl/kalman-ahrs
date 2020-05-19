@@ -5,7 +5,6 @@
 #include <array>
 #include <cstddef>
 #include <functional>
-#include <iostream>
 #include <ostream>
 
 namespace ahrs {
