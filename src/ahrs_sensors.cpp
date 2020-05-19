@@ -75,7 +75,7 @@ void CompassCalibratedSensor::calibrate_soft_iron(int num_of_samples) {
     soft_iron_bias = {1.0, 1.0, 1.0};
     auto [minr, maxr] = find_minmax_in_each_dimension(num_of_samples);
     sensor_readout radius = (maxr - minr) / 2;
-    double avg_radius = (radius.x + radius.y + radius.z / 3);
+    double avg_radius = (radius.x + radius.y + radius.z) / 3;
     soft_iron_bias = {avg_radius / radius.x,
                       avg_radius / radius.y,
                       avg_radius / radius.z};
