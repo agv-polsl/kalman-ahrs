@@ -9,11 +9,6 @@ namespace ahrs {
 struct sensor_readout {
     double x, y, z;
 
-    std::ostream& operator<<(std::ostream& os) {
-        os << x << ' ' << y << ' ' << z;
-        return os;
-    }
-
     bool operator==(const sensor_readout& rhs) const {
         return x == rhs.x && y == rhs.y && z == rhs.z;
     }
@@ -80,6 +75,11 @@ struct sensor_readout {
                 std::invoke(operation, z, rhs)};
     }
 };
+
+inline std::ostream& operator<<(std::ostream& os, const sensor_readout& sr) {
+    os << sr.x << ' ' << sr.y << ' ' << sr.z;
+    return os;
+}
 
 }  // namespace ahrs
 
