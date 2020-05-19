@@ -14,14 +14,12 @@ struct sensor_readout {
         return os;
     }
 
-    template <typename T>
-    bool operator==(const T rhs) {
-        return element_wise(rhs, std::equal_to<double>());
+    bool operator==(const sensor_readout& rhs) const {
+        return x == rhs.x && y == rhs.y && z == rhs.z;
     }
 
-    template <typename T>
-    bool operator!=(const T rhs) {
-        return element_wise(rhs, std::not_equal_to<double>());
+    bool operator!=(const sensor_readout& rhs) const {
+        return x != rhs.x || y != rhs.y || z != rhs.z;
     }
     template <typename T>
     sensor_readout operator+(const T rhs) {
