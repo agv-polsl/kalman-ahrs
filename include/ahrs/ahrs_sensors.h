@@ -18,9 +18,9 @@ class ImuCalibratedSensor {
     sensor_readout read();
     void calibrate_bias(int num_of_samples = 100);
 
+    sensor_readout offset_bias = {0.0, 0.0, 0.0};
    private:
     Sensor& imu_sensor;
-    sensor_readout offset_bias = {0.0, 0.0, 0.0};
 
     sensor_readout avg_n_readouts(int n);
 };
@@ -29,14 +29,16 @@ class CompassCalibratedSensor {
    public:
     CompassCalibratedSensor(Sensor& compass) : compass{compass} {}
     sensor_readout read();
+    sensor_readout get_bias();
     void calibrate_bias(int num_of_samples = 1000);
     void calibrate_hard_iron(int num_of_samples = 1000);
     void calibrate_soft_iron(int num_of_samples = 1000);
 
-   private:
-    Sensor& compass;
     sensor_readout hard_iron_bias = {0.0, 0.0, 0.0};
     sensor_readout soft_iron_bias = {1.0, 1.0, 1.0};
+
+   private:
+    Sensor& compass;
 
     std::array<sensor_readout, 2>
     find_minmax_in_each_dimension(int num_of_samples);

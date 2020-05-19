@@ -10,6 +10,7 @@ add_executable(test_bin
     src/ahrs_test.cpp
     src/numeric_test.cpp
     src/sensor_readout_test.cpp
+    src/ahrs_sensors_test.cpp
 )
 
 target_include_directories(test_bin
