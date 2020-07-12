@@ -1,5 +1,5 @@
-#ifndef NUMERIC_H
-#define NUMERIC_H
+#ifndef AHRS_NUMERIC_H
+#define AHRS_NUMERIC_H
 
 #include <algorithm>
 #include <array>
@@ -16,13 +16,13 @@ template <typename T, size_t N, size_t M>
 constexpr array_2d<T, N, M> zeros() {
     array_2d<T, N, M> ret;
     for (auto& row : ret) {
-        std::fill(row.begin(), row.end(), 0);
+        std::fill(row.begin(), row.end(), static_cast<T>(0));
     }
     return ret;
 }
 
 template <typename T, size_t N>
-constexpr array_2d<T, N, N> eye(double val = 1) {
+constexpr array_2d<T, N, N> eye(T val = static_cast<T>(1)) {
     auto ret = zeros<T, N, N>();
     for (size_t i = 0; i < N; i++) {
         ret[i][i] = val;
@@ -72,17 +72,6 @@ array_2d<T, Nl, Mr> operator*(const array_2d<T, Nl, Ml>& lhs,
 }
 
 template <typename T, size_t N, size_t M>
-std::ostream& operator<<(std::ostream& os, const array_2d<T, N, M> arr) {
-    for (auto row : arr) {
-        for (auto el : row) {
-            os << el << ' ';
-        }
-        os << '\n';
-    }
-    return os;
-}
-
-template <typename T, size_t N, size_t M>
 array_2d<T, M, N> transpose(const array_2d<T, N, M>& arr) {
     array_2d<T, M, N> ret;
     for (size_t i = 0; i < M; i++) {
@@ -93,12 +82,8 @@ array_2d<T, M, N> transpose(const array_2d<T, N, M>& arr) {
     return ret;
 }
 
-/* Below are function to perform matrix inversion using Gauss-Jordan
- * elimination method.
- */
-
 template <typename T, size_t N>
-array_2d<T, N, 2 * N> add_identity(const array_2d<T, N, N>& arr) {
+array_2d<T, N, 2 * N> make_extended(const array_2d<T, N, N>& arr) {
     auto ret = zeros<T, N, 2 * N>();
     for (size_t i = 0; i < N; i++) {
         for (size_t j = 0; j < 2 * N; j++) {
@@ -114,25 +99,18 @@ array_2d<T, N, 2 * N> add_identity(const array_2d<T, N, N>& arr) {
     return ret;
 }
 
-template <typename T, size_t N, size_t M>
-array_2d<T, N, M>& gauss_swap(array_2d<T, N, M>& arr) {
-    static_assert(M == 2 * N,
-                  "Extended matrix must have twice more columns than rows");
+template <typename T, size_t N>
+array_2d<T, N, 2 * N>& reduce_to_echelon(array_2d<T, N, 2 * N>& arr) {
     for (size_t i = N - 1; i > 0; i--) {
         if (arr[i - 1][0] < arr[i][0]) {
-            auto tmp = arr[i];
-            arr[i] = arr[i - 1];
-            arr[i - 1] = tmp;
+            std::swap(arr[i], arr[i - 1]);
         }
     }
     return arr;
 }
 
-template <typename T, size_t N, size_t M>
-array_2d<T, N, M>& gauss_reduce(array_2d<T, N, M>& arr) {
-    static_assert(M == 2 * N,
-                  "Extended matrix must have twice more columns than rows");
-
+template <typename T, size_t N>
+array_2d<T, N, 2 * N>& reduce_to_diag(array_2d<T, N, 2 * N>& arr) {
     for (size_t i = 0; i < N; i++) {
         for (size_t j = 0; j < N; j++) {
             if (j != i) {
@@ -143,7 +121,11 @@ array_2d<T, N, M>& gauss_reduce(array_2d<T, N, M>& arr) {
             }
         }
     }
+    return arr;
+}
 
+template <typename T, size_t N>
+array_2d<T, N, 2 * N>& reduce_to_unit(array_2d<T, N, 2 * N>& arr) {
     for (size_t i = 0; i < N; i++) {
         auto temp = arr[i][i];
         for (size_t j = 0; j < 2 * N; j++) {
@@ -153,22 +135,31 @@ array_2d<T, N, M>& gauss_reduce(array_2d<T, N, M>& arr) {
     return arr;
 }
 
-template <typename T, size_t N, size_t M>
-array_2d<T, N, N> extract_inv(const array_2d<T, N, M>& arr) {
-    static_assert(M == 2 * N,
-                  "Extended matrix must have twice more columns than rows");
-    array_2d<T, N, N> ret = zeros<T, N, N>();
-    /* Copy right half of the extended matrix */
+template <typename T, size_t N>
+array_2d<T, N, N> extract_inv(const array_2d<T, N, 2 * N>& arr) {
+    auto ret = zeros<T, N, N>();
     for (size_t i = 0; i < N; i++) {
-        std::copy_n(arr[i + 1].rend(), N, ret[i + 1].rend());
+        std::copy_n(arr[i].begin() + N, N, ret[i].begin());
     }
     return ret;
 }
 
 template <typename T, size_t N>
 array_2d<T, N, N> inv(const array_2d<T, N, N>& arr) {
-    auto extended = add_identity(arr);
-    return extract_inv(gauss_reduce(gauss_swap(extended)));
+    auto extended = make_extended(arr);
+    auto reduced = reduce_to_unit(reduce_to_diag(reduce_to_echelon(extended)));
+    return extract_inv(reduced);
+}
+
+template <typename T, size_t N, size_t M>
+std::ostream& operator<<(std::ostream& os, const array_2d<T, N, M>& arr) {
+    for (const auto& row : arr) {
+        for (const auto& el : row) {
+            os << el << ' ';
+        }
+        os << '\n';
+    }
+    return os;
 }
 
 }  // namespace ahrs

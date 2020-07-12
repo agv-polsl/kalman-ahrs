@@ -5,22 +5,22 @@
 #include <gtest/gtest.h>
 
 using namespace ::testing;
-using namespace ahrs;
+
+using ahrs::operator+;
+using ahrs::operator-;
+using ahrs::operator*;
+using ahrs::operator<<;
 
 MATCHER_P(Arrays2dDoubleEq, expected, "") {
     for (int i = 0; i < arg.size(); i++) {
-        for (int j = 0; j < arg[i].size(); j++) {
-            EXPECT_THAT(arg[i][j], DoubleEq(expected[i][j]));
-        }
+        EXPECT_THAT(arg[i], Pointwise(DoubleEq(), expected[i]));
     }
     return true;
 }
 
 MATCHER_P2(Arrays2dDoubleNear, expected, max_abs_err, "") {
     for (int i = 0; i < arg.size(); i++) {
-        for (int j = 0; j < arg[i].size(); j++) {
-            EXPECT_THAT(arg[i][j], DoubleNear(expected[i][j], max_abs_err));
-        }
+        EXPECT_THAT(arg[i], Pointwise(DoubleNear(max_abs_err), expected[i]));
     }
     return true;
 }
@@ -152,32 +152,7 @@ TEST(EkfNumericTest, AddsIdentityRightTo3By3Matrix) {
                                               {4.0, 3.0, 8.0, 0, 1, 0},
                                               {7.0, 5.0, 6.0, 0, 0, 1}}};
 
-    EXPECT_THAT(add_identity(arr), expected);
-}
-
-TEST(EkfNumericTest, PerformsGaussSwappingOn3By3) {
-    ahrs::array_2d<double, 3, 6> arr = {{{5.0, 7.0, 9.0, 1, 0, 0},
-                                         {4.0, 3.0, 8.0, 0, 1, 0},
-                                         {7.0, 5.0, 6.0, 0, 0, 1}}};
-
-    ahrs::array_2d<double, 3, 6> expected = {{{7.0, 5.0, 6.0, 0, 0, 1.0},
-                                              {5.0, 7.0, 9.0, 1.0, 0, 0},
-                                              {4.0, 3.0, 8.0, 0, 1.0, 0}}};
-
-    EXPECT_THAT(ahrs::gauss_swap(arr), Arrays2dDoubleEq(expected));
-}
-
-TEST(EkfNumericTest, PerformsGaussReductionToIdentityOn3By3) {
-    ahrs::array_2d<double, 3, 6> arr = {{{7.0, 5.0, 6.0, 0, 0, 1.0},
-                                         {5.0, 7.0, 9.0, 1.0, 0, 0},
-                                         {4.0, 3.0, 8.0, 0, 1.0, 0}}};
-
-    ahrs::array_2d<double, 3, 6> expected = {
-        {{1.0, 0, 0, -0.210, 0.029, 0.276},
-         {0, 1.0, 0, 0.305, -0.314, -0.038},
-         {0, 0, 1.0, -0.010, 0.229, -0.124}}};
-
-    EXPECT_THAT(ahrs::gauss_reduce(arr), Arrays2dDoubleNear(expected, 0.01));
+    EXPECT_THAT(ahrs::make_extended(arr), expected);
 }
 
 TEST(EkfNumericTest, ExtractsInvertedFrom3By3Extended) {
@@ -200,5 +175,5 @@ TEST(EkfNumericTest, Inverts3by3) {
                                               {0.305, -0.314, -0.038},
                                               {-0.010, 0.229, -0.124}}};
 
-    EXPECT_THAT(ahrs::inv(arr), Arrays2dDoubleNear(expected, 0.01));
+    EXPECT_THAT(ahrs::inv(arr), Arrays2dDoubleNear(expected, 0.001));
 }
