@@ -1,5 +1,5 @@
-#ifndef KALMAN_H
-#define KALMAN_H
+#ifndef AHRS_KALMAN_H
+#define AHRS_KALMAN_H
 
 #include "ahrs/numeric.h"
 
@@ -10,36 +10,22 @@ class Kalman {
     Kalman(ahrs::array_2d<double, 4, 4> A, ahrs::array_2d<double, 4, 2> B,
            ahrs::array_2d<double, 2, 4> H)
         : A{A}, B{B}, H{H} {}
-
-    auto update(ahrs::array_2d<double, 2, 1> input,
-                ahrs::array_2d<double, 2, 1> measurement) {
-        predict(input);
-        correct(measurement);
-        return x;
-    }
+    ahrs::array_2d<double, 4, 1> update(
+        ahrs::array_2d<double, 2, 1> input,
+        ahrs::array_2d<double, 2, 1> measurement);
 
     ahrs::array_2d<double, 4, 4> A;
     ahrs::array_2d<double, 4, 2> B;
     ahrs::array_2d<double, 2, 4> H;
 
    private:
+    void correct(const ahrs::array_2d<double, 2, 1>& z);
+    void predict(const ahrs::array_2d<double, 2, 1>& u);
     ahrs::array_2d<double, 4, 1> x = ahrs::zeros<double, 4, 1>();
 
     ahrs::array_2d<double, 4, 4> P = ahrs::eye<double, 4>();
     ahrs::array_2d<double, 4, 4> Q = ahrs::eye<double, 4>();
     ahrs::array_2d<double, 2, 2> R = ahrs::eye<double, 2>();
-
-    void predict(const ahrs::array_2d<double, 2, 1>& u) {
-        x = A * x + B * u;
-        P = A * P * ahrs::transpose(A) + Q;
-    }
-
-    void correct(const ahrs::array_2d<double, 2, 1>& z) {
-        auto K =
-            P * ahrs::transpose(H) * ahrs::inv(H * P * ahrs::transpose(H) + R);
-        x = x + K * (z - H * x);
-        P = P - K * H * P;
-    }
 };
 
 }  // namespace ahrs

@@ -1,6 +1,6 @@
 #include <gmock/gmock.h>
 
-#include "ahrs/ahrs_sensors.h"
+#include "ahrs/sensors.h"
 
 class SensorMock : public ahrs::Sensor {
    public:
