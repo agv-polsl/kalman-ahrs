@@ -32,7 +32,7 @@ static inline double get_roll_from_state_vector(
 
 static inline double get_pitch_from_state_vector(
     const ahrs::array_2d<double, 4, 1>& sv) noexcept {
-    return sv[0][1];
+    return sv[0][2];
 }
 
 Ahrs::Ahrs(Sensor& gyro, Sensor& acc, Sensor& mag, double dt)
