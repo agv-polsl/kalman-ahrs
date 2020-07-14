@@ -2,9 +2,11 @@
 
 #include <gmock/gmock-nice-strict.h>
 #include <gtest/gtest.h>
+#include <chrono>
 
 #include "mocks.h"
 
+using namespace std::chrono_literals;
 using namespace ::testing;
 using namespace ahrs;
 
@@ -13,7 +15,7 @@ class AhrsTest : public Test {
     NiceMock<SensorMock> gyro;
     NiceMock<SensorMock> acc;
     NiceMock<SensorMock> mag;
-    double dt = 0.01;
+    std::chrono::milliseconds dt = 10ms;
 
     ahrs::Ahrs ahrs{gyro, acc, mag, dt};
 };

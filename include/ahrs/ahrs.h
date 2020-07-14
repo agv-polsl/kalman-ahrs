@@ -1,6 +1,7 @@
 #ifndef AHRS_AHRS_H
 #define AHRS_AHRS_H
 
+#include <chrono>
 #include <cmath>
 
 #include "ahrs/kalman.h"
@@ -11,12 +12,13 @@ namespace ahrs {
 
 class Ahrs {
    public:
-    Ahrs(Sensor& gyro, Sensor& acc, Sensor& mag, double dt);
+    Ahrs(Sensor& gyro, Sensor& acc, Sensor& mag,
+         std::chrono::duration<double> dt);
     void calibrate_imu(const size_t num_of_samples = 100);
     void calibrate_mag(const size_t num_of_samples = 1000);
-    void set_dt(double new_dt) noexcept;
+    void set_dt(std::chrono::duration<double> new_dt) noexcept;
     sensor_readout update();
-    sensor_readout update(double dt);
+    sensor_readout update(std::chrono::duration<double> dt);
 
    private:
     ahrs::array_2d<double, 2, 1> calc_euler_angles_rates(

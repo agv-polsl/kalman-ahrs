@@ -1,5 +1,6 @@
 #include "ahrs/ahrs.h"
 
+#include <chrono>
 #include <cmath>
 
 #include "ahrs/numeric.h"
@@ -35,12 +36,13 @@ static inline double get_pitch_from_state_vector(
     return sv[0][2];
 }
 
-Ahrs::Ahrs(Sensor& gyro, Sensor& acc, Sensor& mag, double dt)
+Ahrs::Ahrs(Sensor& gyro, Sensor& acc, Sensor& mag,
+           std::chrono::duration<double> dt)
     : gyro_{gyro},
       acc_{acc},
       mag_{mag},
-      kalman{{{{1, -dt, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, -dt}, {0, 0, 0, 1}}},
-             {{{dt, 0}, {0, 0}, {0, dt}, {0, 0}}},
+      kalman{{{{1, -dt.count(), 0, 0}, {0, 1, 0, 0}, {0, 0, 1, -dt.count()}, {0, 0, 0, 1}}},
+             {{{dt.count(), 0}, {0, 0}, {0, dt.count()}, {0, 0}}},
              {{{1, 0, 0, 0}, {0, 0, 1, 0}}}} {}
 
 void Ahrs::calibrate_imu(const size_t num_of_samples) {
@@ -52,11 +54,11 @@ void Ahrs::calibrate_mag(const size_t num_of_samples) {
     mag_.calibrate_bias(num_of_samples);
 }
 
-void Ahrs::set_dt(double dt) noexcept {
-    kalman.A[0][1] = -dt;
-    kalman.A[2][3] = -dt;
-    kalman.B[0][0] = dt;
-    kalman.B[2][1] = dt;
+void Ahrs::set_dt(std::chrono::duration<double> dt) noexcept {
+    kalman.A[0][1] = -dt.count();
+    kalman.A[2][3] = -dt.count();
+    kalman.B[0][0] = dt.count();
+    kalman.B[2][1] = dt.count();
 }
 
 sensor_readout Ahrs::update() {
@@ -93,7 +95,7 @@ ahrs::array_2d<double, 2, 1> Ahrs::calc_estimate(sensor_readout acc) const {
     return {{{roll_estimate}, {pitch_estitmate}}};
 }
 
-sensor_readout Ahrs::update(double dt) {
+sensor_readout Ahrs::update(std::chrono::duration<double> dt) {
     set_dt(dt);
     return update();
 }
