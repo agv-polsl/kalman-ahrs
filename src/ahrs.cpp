@@ -7,7 +7,7 @@
 
 namespace ahrs {
 
-static inline double to_deg(double rad) { return rad * 180 / M_PI; }
+static inline double to_deg(double rad) noexcept { return rad * 180 / M_PI; }
 
 static double calc_roll(const sensor_readout acc) {
     return std::atan2(acc.y, sqrt(std::pow(acc.x, 2) + std::pow(acc.z, 2)));
@@ -36,14 +36,33 @@ static inline double get_pitch_from_state_vector(
     return sv[0][2];
 }
 
+static inline array_2d<double, 4, 4> make_A(
+    const std::chrono::duration<double> dt) {
+    double dtc = dt.count();
+    return {{{1.0, -dtc,  0.0,  0.0},
+             {0.0,  1.0,  0.0,  0.0},
+             {0.0,  0.0,  1.0, -dtc},
+             {0.0,  0.0,  0.0,  1.0}}};
+}
+
+static inline array_2d<double, 4, 2> make_B(
+    const std::chrono::duration<double> dt) {
+    double dtc = dt.count();
+    return {{{dtc, 0.0}, {0.0, 0.0}, {0.0, dtc}, {0.0, 0.0}}};
+}
+
+static inline array_2d<double, 2, 4> make_H() {
+    return {{{1.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}}};
+}
+
 Ahrs::Ahrs(Sensor& gyro, Sensor& acc, Sensor& mag,
-           std::chrono::duration<double> dt)
+           const std::chrono::duration<double> dt)
     : gyro_{gyro},
       acc_{acc},
       mag_{mag},
-      kalman{{{{1, -dt.count(), 0, 0}, {0, 1, 0, 0}, {0, 0, 1, -dt.count()}, {0, 0, 0, 1}}},
-             {{{dt.count(), 0}, {0, 0}, {0, dt.count()}, {0, 0}}},
-             {{{1, 0, 0, 0}, {0, 0, 1, 0}}}} {}
+      kalman{make_A(dt),
+             make_B(dt),
+             make_H()} {}
 
 void Ahrs::calibrate_imu(const size_t num_of_samples) {
     gyro_.calibrate_bias(num_of_samples);
@@ -54,7 +73,7 @@ void Ahrs::calibrate_mag(const size_t num_of_samples) {
     mag_.calibrate_bias(num_of_samples);
 }
 
-void Ahrs::set_dt(std::chrono::duration<double> dt) noexcept {
+void Ahrs::set_dt(const std::chrono::duration<double> dt) noexcept {
     kalman.A[0][1] = -dt.count();
     kalman.A[2][3] = -dt.count();
     kalman.B[0][0] = dt.count();
@@ -95,7 +114,7 @@ ahrs::array_2d<double, 2, 1> Ahrs::calc_estimate(sensor_readout acc) const {
     return {{{roll_estimate}, {pitch_estitmate}}};
 }
 
-sensor_readout Ahrs::update(std::chrono::duration<double> dt) {
+sensor_readout Ahrs::update(const std::chrono::duration<double> dt) {
     set_dt(dt);
     return update();
 }
