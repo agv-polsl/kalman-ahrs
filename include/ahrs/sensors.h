@@ -9,30 +9,43 @@ namespace ahrs {
 class Sensor {
    public:
     virtual sensor_readout read() = 0;
-    virtual ~Sensor() {}
+    virtual ~Sensor() = default;
 };
 
 class ImuCalibratedSensor {
-   public:
-    ImuCalibratedSensor(Sensor& imu_sensor) : imu_sensor{imu_sensor} {}
-    sensor_readout read();
-    void calibrate_bias(int num_of_samples = 100);
+   public: 
+    explicit ImuCalibratedSensor(Sensor& imu_sensor) : imu_sensor{imu_sensor} {}
+    sensor_readout read() const;
+    virtual void calibrate_bias(const size_t num_of_samples = 100);
+    virtual ~ImuCalibratedSensor() = default;
 
     sensor_readout offset_bias = {0.0, 0.0, 0.0};
+
    private:
     Sensor& imu_sensor;
 
-    sensor_readout avg_n_readouts(int n);
+    sensor_readout avg_n_readouts(const size_t n) const;
+};
+
+class GyroCalibratedSensor : public ImuCalibratedSensor {
+   public:
+    explicit GyroCalibratedSensor(Sensor& gyro) : ImuCalibratedSensor(gyro) {}
+};
+
+class AccelCalibratedSensor : public ImuCalibratedSensor {
+   public:
+    explicit AccelCalibratedSensor(Sensor& accel)
+        : ImuCalibratedSensor(accel) {}
+    void calibrate_bias(const size_t num_of_samples = 100) override;
 };
 
 class CompassCalibratedSensor {
    public:
-    CompassCalibratedSensor(Sensor& compass) : compass{compass} {}
-    sensor_readout read();
-    sensor_readout get_bias();
-    void calibrate_bias(int num_of_samples = 1000);
-    void calibrate_hard_iron(int num_of_samples = 1000);
-    void calibrate_soft_iron(int num_of_samples = 1000);
+    explicit CompassCalibratedSensor(Sensor& compass) : compass{compass} {}
+    sensor_readout read() const;
+    void calibrate_bias(const size_t num_of_samples = 1000);
+    void calibrate_hard_iron(const size_t num_of_samples = 1000);
+    void calibrate_soft_iron(const size_t num_of_samples = 1000);
 
     sensor_readout hard_iron_bias = {0.0, 0.0, 0.0};
     sensor_readout soft_iron_bias = {1.0, 1.0, 1.0};
@@ -41,9 +54,7 @@ class CompassCalibratedSensor {
     Sensor& compass;
 
     std::array<sensor_readout, 2>
-    find_minmax_in_each_dimension(int num_of_samples);
-    static sensor_readout update_min(sensor_readout newr, sensor_readout minr);
-    static sensor_readout update_max(sensor_readout newr, sensor_readout maxr);
+    find_minmax_in_each_dimension(const size_t num_of_samples) const;
 };
 
 }  // namespace ahrs

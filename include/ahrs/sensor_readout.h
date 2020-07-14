@@ -71,13 +71,14 @@ struct sensor_readout {
     template <typename BinaryOperation>
     sensor_readout element_wise(const double rhs,
                                 BinaryOperation operation) const noexcept {
-        return {std::invoke(operation, x, rhs), std::invoke(operation, y, rhs),
+        return {std::invoke(operation, x, rhs),
+                std::invoke(operation, y, rhs),
                 std::invoke(operation, z, rhs)};
     }
 };
 
 inline std::ostream& operator<<(std::ostream& os,
-                                const sensor_readout& sr) noexcept {
+                                const sensor_readout& sr) {
     os << sr.x << ' ' << sr.y << ' ' << sr.z;
     return os;
 }

@@ -20,7 +20,8 @@ class Kalman {
 
    private:
     void correct(const ahrs::array_2d<double, 2, 1>& z);
-    void predict(const ahrs::array_2d<double, 2, 1>& u);
+    void predict(const ahrs::array_2d<double, 2, 1>& u) noexcept;
+
     ahrs::array_2d<double, 4, 1> x = ahrs::zeros<double, 4, 1>();
 
     ahrs::array_2d<double, 4, 4> P = ahrs::eye<double, 4>();

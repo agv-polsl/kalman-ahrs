@@ -15,6 +15,12 @@ class ImuCalibratedSensorTest : public Test {
     ImuCalibratedSensor imu_cal{sensor_mock};
 };
 
+class AccelCalibratedSensorTest : public Test {
+   public:
+    SensorMock sensor_mock;
+    AccelCalibratedSensor accel_cal{sensor_mock};
+};
+
 class CompassCalibratedSensorTest : public Test {
    public:
     SensorMock sensor_mock;
@@ -33,26 +39,49 @@ TEST_F(ImuCalibratedSensorTest, FixesBiasOnRead) {
 }
 
 TEST_F(ImuCalibratedSensorTest, CalibratesBias) {
-    /* Bias should be avg of readouts with z being zero */
+    /* Bias should be avg of readouts */
+    sensor_readout expected = {-5, 5, 5};
+
+    InSequence s;
+    EXPECT_CALL(sensor_mock, read())
+        .Times(25)
+        .WillRepeatedly(Return(sensor_readout{-2, 2, 3}));
+    EXPECT_CALL(sensor_mock, read())
+        .Times(25)
+        .WillRepeatedly(Return(sensor_readout{-4, 4, 7}));
+    EXPECT_CALL(sensor_mock, read())
+        .Times(25)
+        .WillRepeatedly(Return(sensor_readout{-6, 6, 10}));
+    EXPECT_CALL(sensor_mock, read())
+        .Times(25)
+        .WillRepeatedly(Return(sensor_readout{-8, 8, 0}));
+
+    imu_cal.calibrate_bias(100);
+
+    EXPECT_EQ(imu_cal.offset_bias, expected);
+}
+
+TEST_F(AccelCalibratedSensorTest, ZeroesZAxisBiasAfterCalibration) {
+    /* Bias should be avg of readouts */
     sensor_readout expected = {-5, 5, 0};
 
     InSequence s;
     EXPECT_CALL(sensor_mock, read())
         .Times(25)
-        .WillRepeatedly(Return(sensor_readout{-2, 2, 1}));
+        .WillRepeatedly(Return(sensor_readout{-2, 2, 3}));
     EXPECT_CALL(sensor_mock, read())
         .Times(25)
-        .WillRepeatedly(Return(sensor_readout{-4, 4, 1}));
+        .WillRepeatedly(Return(sensor_readout{-4, 4, 7}));
     EXPECT_CALL(sensor_mock, read())
         .Times(25)
-        .WillRepeatedly(Return(sensor_readout{-6, 6, 1}));
+        .WillRepeatedly(Return(sensor_readout{-6, 6, 10}));
     EXPECT_CALL(sensor_mock, read())
         .Times(25)
-        .WillRepeatedly(Return(sensor_readout{-8, 8, 1}));
+        .WillRepeatedly(Return(sensor_readout{-8, 8, 0}));
 
-    imu_cal.calibrate_bias(100);
+    accel_cal.calibrate_bias(100);
 
-    EXPECT_EQ(imu_cal.offset_bias, expected);
+    EXPECT_EQ(accel_cal.offset_bias, expected);
 }
 
 TEST_F(CompassCalibratedSensorTest, FixesBiasOnRead) {
@@ -101,7 +130,7 @@ TEST_F(CompassCalibratedSensorTest, CalibratesHardIron) {
 
 TEST_F(CompassCalibratedSensorTest, CalibratesSoftIron) {
     sensor_readout expected = {(8. + 4. + 2.) / 3 / 8,
-		                       (8. + 4. + 2.) / 3 / 4,
+                               (8. + 4. + 2.) / 3 / 4,
                                (8. + 4. + 2.) / 3 / 2};
 
     InSequence s;

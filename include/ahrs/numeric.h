@@ -33,7 +33,7 @@ constexpr array_2d<T, N, N> eye(T val = static_cast<T>(1)) {
 template <typename BinaryOperation, typename T, size_t N, size_t M>
 array_2d<T, N, M> element_wise(const array_2d<T, N, M>& lhs,
                                const array_2d<T, N, M>& rhs,
-                               BinaryOperation operation) {
+                               BinaryOperation operation) noexcept {
     array_2d<T, N, M> ret;
     for (size_t i = 0; i < N; i++) {
         for (size_t j = 0; j < M; j++) {
@@ -45,19 +45,19 @@ array_2d<T, N, M> element_wise(const array_2d<T, N, M>& lhs,
 
 template <typename T, size_t N, size_t M>
 array_2d<T, N, M> operator+(const array_2d<T, N, M>& lhs,
-                            const array_2d<T, N, M>& rhs) {
+                            const array_2d<T, N, M>& rhs) noexcept {
     return ahrs::element_wise(lhs, rhs, std::plus<T>());
 }
 
 template <typename T, size_t N, size_t M>
 array_2d<T, N, M> operator-(const array_2d<T, N, M>& lhs,
-                            const array_2d<T, N, M>& rhs) {
+                            const array_2d<T, N, M>& rhs) noexcept {
     return ahrs::element_wise(lhs, rhs, std::minus<T>());
 }
 
 template <typename T, size_t Nl, size_t Ml, size_t Nr, size_t Mr>
 array_2d<T, Nl, Mr> operator*(const array_2d<T, Nl, Ml>& lhs,
-                              const array_2d<T, Nr, Mr>& rhs) {
+                              const array_2d<T, Nr, Mr>& rhs) noexcept {
     static_assert(Ml == Nr, "Can not multiply matrices of given size");
     auto ret = zeros<T, Nl, Mr>();
 
@@ -72,7 +72,7 @@ array_2d<T, Nl, Mr> operator*(const array_2d<T, Nl, Ml>& lhs,
 }
 
 template <typename T, size_t N, size_t M>
-array_2d<T, M, N> transpose(const array_2d<T, N, M>& arr) {
+array_2d<T, M, N> transpose(const array_2d<T, N, M>& arr) noexcept {
     array_2d<T, M, N> ret;
     for (size_t i = 0; i < M; i++) {
         for (size_t j = 0; j < N; j++) {
@@ -83,7 +83,7 @@ array_2d<T, M, N> transpose(const array_2d<T, N, M>& arr) {
 }
 
 template <typename T, size_t N>
-array_2d<T, N, 2 * N> make_extended(const array_2d<T, N, N>& arr) {
+array_2d<T, N, 2 * N> make_extended(const array_2d<T, N, N>& arr) noexcept {
     auto ret = zeros<T, N, 2 * N>();
     for (size_t i = 0; i < N; i++) {
         for (size_t j = 0; j < 2 * N; j++) {
@@ -100,7 +100,7 @@ array_2d<T, N, 2 * N> make_extended(const array_2d<T, N, N>& arr) {
 }
 
 template <typename T, size_t N>
-array_2d<T, N, 2 * N>& reduce_to_echelon(array_2d<T, N, 2 * N>& arr) {
+array_2d<T, N, 2 * N>& reduce_to_echelon(array_2d<T, N, 2 * N>& arr) noexcept {
     for (size_t i = N - 1; i > 0; i--) {
         if (arr[i - 1][0] < arr[i][0]) {
             std::swap(arr[i], arr[i - 1]);
@@ -110,7 +110,7 @@ array_2d<T, N, 2 * N>& reduce_to_echelon(array_2d<T, N, 2 * N>& arr) {
 }
 
 template <typename T, size_t N>
-array_2d<T, N, 2 * N>& reduce_to_diag(array_2d<T, N, 2 * N>& arr) {
+array_2d<T, N, 2 * N>& reduce_to_diag(array_2d<T, N, 2 * N>& arr) noexcept {
     for (size_t i = 0; i < N; i++) {
         for (size_t j = 0; j < N; j++) {
             if (j != i) {
@@ -125,7 +125,7 @@ array_2d<T, N, 2 * N>& reduce_to_diag(array_2d<T, N, 2 * N>& arr) {
 }
 
 template <typename T, size_t N>
-array_2d<T, N, 2 * N>& reduce_to_unit(array_2d<T, N, 2 * N>& arr) {
+array_2d<T, N, 2 * N>& reduce_to_unit(array_2d<T, N, 2 * N>& arr) noexcept {
     for (size_t i = 0; i < N; i++) {
         auto temp = arr[i][i];
         for (size_t j = 0; j < 2 * N; j++) {
@@ -139,7 +139,7 @@ template <typename T, size_t N>
 array_2d<T, N, N> extract_inv(const array_2d<T, N, 2 * N>& arr) {
     auto ret = zeros<T, N, N>();
     for (size_t i = 0; i < N; i++) {
-        std::copy_n(arr[i].begin() + N, N, ret[i].begin());
+        std::copy_n(arr[i].cbegin() + N, N, ret[i].begin());
     }
     return ret;
 }
