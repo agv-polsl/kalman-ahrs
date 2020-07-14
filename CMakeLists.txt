@@ -3,7 +3,7 @@ project(ahrs LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_library(ahrs src/ahrs.cpp src/ahrs_sensors.cpp)
+add_library(ahrs src/ahrs.cpp src/sensors.cpp src/kalman.cpp)
 add_library(ahrs::ahrs ALIAS ahrs)
 
 target_include_directories(ahrs
