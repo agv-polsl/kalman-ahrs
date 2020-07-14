@@ -19,44 +19,44 @@ struct sensor_readout {
 
     template <typename T>
     sensor_readout operator+(const T rhs) const noexcept {
-        return element_wise(rhs, std::plus());
+        return element_wise(rhs, std::plus<double>());
     }
 
     template <typename T>
     sensor_readout operator+=(T rhs) noexcept {
-        *this = element_wise(rhs, std::plus());
+        *this = element_wise(rhs, std::plus<double>());
         return *this;
     }
 
     template <typename T>
     sensor_readout operator-(T rhs) const noexcept {
-        return element_wise(rhs, std::minus());
+        return element_wise(rhs, std::minus<double>());
     }
 
     template <typename T>
     sensor_readout operator-=(T rhs) noexcept {
-        *this = element_wise(rhs, std::minus());
+        *this = element_wise(rhs, std::minus<double>());
         return *this;
     }
     template <typename T>
     sensor_readout operator*(T rhs) const noexcept {
-        return element_wise(rhs, std::multiplies());
+        return element_wise(rhs, std::multiplies<double>());
     }
 
     template <typename T>
     sensor_readout operator*=(T rhs) noexcept {
-        *this = element_wise(rhs, std::multiplies());
+        *this = element_wise(rhs, std::multiplies<double>());
         return *this;
     }
 
     template <typename T>
     sensor_readout operator/(T rhs) const noexcept {
-        return element_wise(rhs, std::divides());
+        return element_wise(rhs, std::divides<double>());
     }
 
     template <typename T>
     sensor_readout operator/=(T rhs) noexcept {
-        *this = element_wise(rhs, std::divides());
+        *this = element_wise(rhs, std::divides<double>());
         return *this;
     }
 
