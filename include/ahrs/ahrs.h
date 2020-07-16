@@ -17,6 +17,9 @@ class Ahrs {
     void calibrate_imu(const size_t num_of_samples = 100);
     void calibrate_mag(const size_t num_of_samples = 1000);
     void set_dt(const std::chrono::duration<double> new_dt) noexcept;
+    void set_P_diagonal(const double val) noexcept;
+    void set_Q_diagonal(const double val) noexcept;
+    void set_R_diagonal(const double val) noexcept;
     sensor_readout update();
     sensor_readout update(const std::chrono::duration<double> dt);
 
