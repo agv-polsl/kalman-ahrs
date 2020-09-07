@@ -13,6 +13,9 @@ class Kalman {
     ahrs::array_2d<double, 4, 1> update(
         ahrs::array_2d<double, 2, 1> input,
         ahrs::array_2d<double, 2, 1> measurement);
+    void set_P_diagonal(const double val) noexcept;
+    void set_Q_diagonal(const double val) noexcept;
+    void set_R_diagonal(const double val) noexcept;
 
     ahrs::array_2d<double, 4, 4> A;
     ahrs::array_2d<double, 4, 2> B;

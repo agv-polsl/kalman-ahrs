@@ -80,6 +80,18 @@ void Ahrs::set_dt(const std::chrono::duration<double> dt) noexcept {
     kalman.B[2][1] = dt.count();
 }
 
+void Ahrs::set_P_diagonal(const double val) noexcept {
+    kalman.set_P_diagonal(val);
+}
+
+void Ahrs::set_Q_diagonal(const double val) noexcept {
+    kalman.set_Q_diagonal(val);
+}
+
+void Ahrs::set_R_diagonal(const double val) noexcept {
+    kalman.set_R_diagonal(val);
+}
+
 sensor_readout Ahrs::update() {
     auto gr = gyro.read();
     auto ar = acc.read();
