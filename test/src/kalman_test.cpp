@@ -23,7 +23,9 @@ class KalmanFilterTest : public Test {
     }
 };
 
-/* TODO: Due to the complex nature of the filter the testing
- * requires much thought and is delegated to the issue #26.
+/*
+ * This is prepared for testing AHRS system. Since predictions of the system
+ * are based on statistics and complex calculations they are demanding to test.
+ * It would be best to get a professional AHRS system and compare its output
+ * with the code (keeping in mind a sensible margin of error).
  */
-TEST_F(KalmanFilterTest, AnyTest) {}

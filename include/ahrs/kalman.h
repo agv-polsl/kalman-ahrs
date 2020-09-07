@@ -5,6 +5,12 @@
 
 namespace ahrs {
 
+/**
+ * This is a Kalman filter implementation.
+ * Since this is based on control theory, please relate to academic sources
+ * to understand this code. Names of the variables follow conventional math
+ * symbols used for describing Kalman filter.
+ */
 class Kalman {
    public:
     Kalman(ahrs::array_2d<double, 4, 4> A, ahrs::array_2d<double, 4, 2> B,

@@ -6,6 +6,10 @@
 
 namespace ahrs {
 
+/**
+ * Interface for generic AHRS sensor. Implement it and inject to initialize
+ * AHRS system.
+ */
 class Sensor {
    public:
     virtual sensor_readout read() = 0;
