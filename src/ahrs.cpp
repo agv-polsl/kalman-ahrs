@@ -57,20 +57,20 @@ static inline array_2d<double, 2, 4> make_H() {
 
 Ahrs::Ahrs(Sensor& gyro, Sensor& acc, Sensor& mag,
            const std::chrono::duration<double> dt)
-    : gyro_{gyro},
-      acc_{acc},
-      mag_{mag},
+    : gyro{gyro},
+      acc{acc},
+      mag{mag},
       kalman{make_A(dt),
              make_B(dt),
              make_H()} {}
 
 void Ahrs::calibrate_imu(const size_t num_of_samples) {
-    gyro_.calibrate_bias(num_of_samples);
-    acc_.calibrate_bias(num_of_samples);
+    gyro.calibrate_bias(num_of_samples);
+    acc.calibrate_bias(num_of_samples);
 }
 
 void Ahrs::calibrate_mag(const size_t num_of_samples) {
-    mag_.calibrate_bias(num_of_samples);
+    mag.calibrate_bias(num_of_samples);
 }
 
 void Ahrs::set_dt(const std::chrono::duration<double> dt) noexcept {
@@ -81,9 +81,9 @@ void Ahrs::set_dt(const std::chrono::duration<double> dt) noexcept {
 }
 
 sensor_readout Ahrs::update() {
-    auto gr = gyro_.read();
-    auto ar = acc_.read();
-    auto mr = mag_.read();
+    auto gr = gyro.read();
+    auto ar = acc.read();
+    auto mr = mag.read();
 
     auto system_input_vector = calc_euler_angles_rates(gr);
     auto estimate_vector = calc_estimate(ar);
@@ -99,17 +99,18 @@ sensor_readout Ahrs::update() {
 }
 
 ahrs::array_2d<double, 2, 1> Ahrs::calc_euler_angles_rates(
-    sensor_readout gyro) const {
-    auto roll_rate = gyro.x + sin(state.x) * tan(state.y) * gyro.y +
-                     cos(state.x) * tan(state.y) * gyro.z;
-    auto pitch_rate = cos(state.x) * gyro.y - sin(state.x) * gyro.z;
+    sensor_readout gyro_read) const {
+    auto roll_rate = gyro_read.x + sin(state.x) * tan(state.y) * gyro_read.y +
+                     cos(state.x) * tan(state.y) * gyro_read.z;
+    auto pitch_rate = cos(state.x) * gyro_read.y - sin(state.x) * gyro_read.z;
 
     return {{{roll_rate}, {pitch_rate}}};
 }
 
-ahrs::array_2d<double, 2, 1> Ahrs::calc_estimate(sensor_readout acc) const {
-    auto roll_estimate = calc_roll(acc);
-    auto pitch_estitmate = calc_pitch(acc);
+ahrs::array_2d<double, 2, 1> Ahrs::calc_estimate(
+    sensor_readout acc_read) const {
+    auto roll_estimate = calc_roll(acc_read);
+    auto pitch_estitmate = calc_pitch(acc_read);
 
     return {{{roll_estimate}, {pitch_estitmate}}};
 }
