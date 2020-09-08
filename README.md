@@ -42,10 +42,10 @@ For example, this can be done in a thread loop:
 
 ```cpp
 while (true) {
-std::this_thread::sleep_for(dt);
-auto readout = ahrs.update();
-std::cout << "x: " << readout.x << '\t' << "y: " << readout.y << '\t'
-<< "z: " << readout.z << '\n';
+    std::this_thread::sleep_for(dt);
+    auto readout = ahrs.update();
+    std::cout << "x: " << readout.x << '\t' << "y: " << readout.y << '\t'
+              << "z: " << readout.z << '\n';
 }
 ```
 
