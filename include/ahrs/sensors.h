@@ -9,6 +9,11 @@ namespace ahrs {
 /**
  * Interface for generic AHRS sensor. Implement it and inject to initialize
  * AHRS system.
+ *
+ * Notice that readouts from sensors should be in specific units.
+ * Acceleration should be in meters per second squared,
+ * angular velocity (from gyro) should be in degrees per second
+ * and magnetic induction should be in gauss.
  */
 class Sensor {
    public:
@@ -17,7 +22,7 @@ class Sensor {
 };
 
 class ImuCalibratedSensor {
-   public: 
+   public:
     explicit ImuCalibratedSensor(Sensor& imu_sensor) : imu_sensor{imu_sensor} {}
     sensor_readout read() const;
     virtual void calibrate_bias(const size_t num_of_samples = 100);

@@ -21,6 +21,11 @@ class Ahrs {
     /**
      * Initialize AHRS by injecting implemented Sensor interface for each
      * sensor and an initial sampling period.
+     *
+     * Notice that readouts from sensors should be in specific units.
+     * Acceleration should be in meters per second squared,
+     * angular velocity (from gyro) should be in degrees per second
+     * and magnetic induction should be in gauss.
      */
     Ahrs(Sensor& gyro, Sensor& acc, Sensor& mag,
          const std::chrono::duration<double> dt);
@@ -52,11 +57,12 @@ class Ahrs {
     void set_R_diagonal(const double val) noexcept;
     /**
      * Update the system cycle and get current roll, pitch, yaw angles
+     * in degrees.
      */
     sensor_readout update();
     /**
      * Update the system cycle with new sampling period
-     * and get current roll, pitch, yaw angles
+     * and get current roll, pitch, yaw angles in degrees.
      */
     sensor_readout update(const std::chrono::duration<double> dt);
 
