@@ -7,7 +7,7 @@ compensation built in.
 Works with a gyroscope, accelerometer and magnetometer combo.
 Built with no dependencies, utilises templating, deosn't rely on exceptions and
 avoids dynamic memory allocation.
-Suitable for Linux devives and real time embedded devices.
+Suitable for Linux and real time embedded devices.
 Tested on RaspberryPi with Pololu Minimu-9 v5.
 
 # Build
