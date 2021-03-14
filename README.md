@@ -5,7 +5,7 @@
 Kalman filter based AHRS C++ library with sensor calibration and tilt
 compensation built in.
 Works with a gyroscope, accelerometer and magnetometer combo.
-Built with no dependencies, utilises templating, deosn't rely on exceptions and
+Built with no dependencies, utilises templating, doesn't rely on exceptions and
 avoids dynamic memory allocation.
 Suitable for Linux and real time embedded devices.
 Tested on RaspberryPi with Pololu Minimu-9 v5.
